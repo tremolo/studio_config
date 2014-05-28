@@ -550,7 +550,7 @@ engines:
     - {app_instance: tk-multi-publish, name: Publish...}
     template_project: shot_work_area_softimage
 frameworks:
-  tk-framework-shotgunutils_v1.x.x:
+  tk-framework-shotgunutils_v2.x.x:
     location: {name: tk-framework-shotgunutils, type: app_store, version: v1.0.10}
   tk-framework-softimageqt_v1.0.1:
     location: {name: tk-framework-softimageqt, type: app_store, version: v1.0.1}
@@ -561,5 +561,7 @@ frameworks:
   tk-framework-widget_v0.1.19:
     location: {name: tk-framework-widget, type: app_store, version: v0.1.19}
   tk-framework-widget_v0.1.22:
-    location: {name: tk-framework-widget, type: app_store, version: v0.1.22}
+    location: {name: tk-framework-qtwidgets, type: app_store, version: v1.0.0}
+  tk-framework-qtwidgets_v1.x.x:
+    location: {name: tk-framework-widget, type: app_store, version: v1.0.0}
 includes: [./includes/app_launchers.yml, ./includes/common_apps.yml]
