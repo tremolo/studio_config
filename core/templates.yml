@@ -347,6 +347,26 @@ paths:
 
 
     #
+    # Modo
+    #
+    
+    # define the location of a work area
+    asset_work_area_modo: '@asset_root/work/modo'
+    
+    # define the location of a publish area
+    asset_publish_area_modo: '@asset_root/publish/modo'
+
+    # The location of WIP files
+    modo_asset_work: '@asset_root/work/modo/{Asset}[-{name}]_{Step}_v{version}.lxo'
+
+    # The location of backups of WIP files
+    modo_asset_snapshot: '@asset_root/work/modo/snapshots/{Asset}[-{name}]_{Step}_v{version}.{timestamp}.lxo'
+
+    # The location of published modo files
+    modo_asset_publish: '@asset_root/publish/modo/{Asset}[-{name}]_{Step}_v{version}.lxo'
+
+
+    #
     # Houdini
     #
 
