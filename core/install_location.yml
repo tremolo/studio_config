@@ -1,9 +1,10 @@
 # Shotgun Pipeline Toolkit configuration file
-# This file reflects the paths in the pipeline configuration
-# entity which is associated with this location
+# This file was automatically created by setup_project
+# This file reflects the paths in the primary pipeline
+# configuration defined for this project.
 
-Windows: 'Z:\Shotgun_Configs\RTS_Master'
-Darwin: ''
-Linux: ''
+Windows: 'W:\WG\Shotgun_Configs\RTS_Master'
+Darwin: 'None'
+Linux: 'None'
 
 # End of file.
