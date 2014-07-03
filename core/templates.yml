@@ -105,7 +105,6 @@ paths:
     ##########################################################################################
     # Project level paths 
     #
-
     #
     # Hiero
     #
@@ -193,13 +192,13 @@ paths:
     shot_publish_area_houdini: '@shot_root/publish/houdini'
 
     # The location of WIP files
-    houdini_shot_work: '@shot_root/work/houdini/{name}.v{version}.hip'
+    houdini_shot_work: '@shot_root/work/houdini/{name}_v{version}.hip'
 
     # The location of backups of WIP files
-    houdini_shot_snapshot: '@shot_root/work/houdini/snapshots/{name}.v{version}.{timestamp}.hip'
+    houdini_shot_snapshot: '@shot_root/work/houdini/snapshots/{name}_v{version}.{timestamp}.hip'
 
     # The location of published houdini files
-    houdini_shot_publish: '@shot_root/publish/houdini/{name}.v{version}.hip'
+    houdini_shot_publish: '@shot_root/publish/houdini/{name}_v{version}.hip'
 
     # Alembic caches
     houdini_shot_work_alembic_cache: '@shot_root/work/houdini/cache/alembic/{name}/v{version}/{Shot}_{name}_v{version}_{node}.abc'
@@ -227,13 +226,13 @@ paths:
     shot_publish_area_max: '@shot_root/publish/3dsmax'
 
     # The location of WIP files
-    max_shot_work: '@shot_root/work/3dsmax/{name}.v{version}.max'
+    max_shot_work: '@shot_root/work/3dsmax/{name}_v{version}.max'
 
     # The location of backups of WIP files
-    max_shot_snapshot: '@shot_root/work/3dsmax/snapshots/{name}.v{version}.{timestamp}.max'
+    max_shot_snapshot: '@shot_root/work/3dsmax/snapshots/{name}_v{version}.{timestamp}.max'
 
     # The location of published maya files
-    max_shot_publish: '@shot_root/publish/3dsmax/{name}.v{version}.max'
+    max_shot_publish: '@shot_root/publish/3dsmax/{name}_v{version}.max'
 
 
     #
@@ -241,13 +240,13 @@ paths:
     #
 
     # The location of WIP files
-    mobu_shot_work: '@shot_root/work/mobu/{name}.v{version}.fbx'
+    mobu_shot_work: '@shot_root/work/mobu/{name}_v{version}.fbx'
 
     # The location of backups of WIP files
-    mobu_shot_snapshot: '@shot_root/work/mobu/snapshots/{name}.v{version}.{timestamp}.fbx'
+    mobu_shot_snapshot: '@shot_root/work/mobu/snapshots/{name}_v{version}.{timestamp}.fbx'
 
     # The location of published maya files
-    mobu_shot_publish: '@shot_root/publish/mobu/{name}.v{version}.fbx'
+    mobu_shot_publish: '@shot_root/publish/mobu/{name}_v{version}.fbx'
 
     #
     # Nuke 
@@ -270,13 +269,13 @@ paths:
 
     # write node outputs
     nuke_shot_render_mono_dpx:            '@shot_render_root/work/v{version}/{Sequence}_{Shot}_v{version}.{SEQ}.dpx'
-    nuke_shot_render_pub_mono_dpx:        '@shot_render_root/publish/v{version}/{Sequence}_{Shot}}_v{version}.{SEQ}.dpx'
-    nuke_shot_render_stereo:            '@shot_render_root/work/v{version}/{Sequence}_{Shot}_{name}_{channel}_{eye}_v{version}.{SEQ}.exr'
-    nuke_shot_render_pub_stereo:        '@shot_render_root/publish/v{version}/{Sequence}_{Shot}_{name}_{channel}_{eye}_v{version}.{SEQ}.exr'
+    nuke_shot_render_pub_mono_dpx:        '@shot_render_root/publish/v{version}/{Sequence}_{Shot}_v{version}.{SEQ}.dpx'
+    nuke_shot_render_stereo:            '@shot_render_root/work/v{version}/{Sequence}_{Shot}_{eye}_v{version}.{SEQ}.exr'
+    nuke_shot_render_pub_stereo:        '@shot_render_root/publish/v{version}/{Sequence}_{Shot}_{eye}_v{version}.{SEQ}.exr'
 
     # review output
-    shot_quicktime_quick:   '@shot_render_root/review/quickdaily/{Shot}_{name}_{iteration}.mov'
-    nuke_shot_render_movie: '@shot_render_root/review/{Shot}_{name}_{channel}_v{version}.mov'
+    shot_quicktime_quick:   '@shot_render_root/review/quickdaily/{Sequence}_{Shot}_{name}_{iteration}.mov'
+    nuke_shot_render_movie: '@shot_render_root/review/{Sequence}_{Shot}_v{version}.mov'
 
     #
     # Hiero
@@ -304,7 +303,7 @@ paths:
     softimage_shot_snapshot: '@shot_root/work/softimage/snapshots/{name}_v{version}.{timestamp}.scn'
 
     # The location of published softimage files
-    softimage_shot_publish: '@shot_root/publish/softimage/{name}.v{version}.scn'
+    softimage_shot_publish: '@shot_root/publish/softimage/{name}_v{version}.scn'
 
 
     ##########################################################################################
@@ -315,15 +314,15 @@ paths:
     #
 
     # The location of WIP files
-    photoshop_asset_work: '@asset_root/work/photoshop/{name}.v{version}.psd'
+    photoshop_asset_work: '@asset_root/work/photoshop/{Asset}[-{name}]_v{version}.psd'
     asset_work_area_photoshop: '@asset_root/work/photoshop'
 
     # The location of backups of WIP files
-    photoshop_asset_snapshot: '@asset_root/work/photoshop/snapshots/{name}.v{version}.{timestamp}.psd'
+    photoshop_asset_snapshot: '@asset_root/work/photoshop/snapshots/{Asset}[-{name}]_v{version}.{timestamp}.psd'
 
     # The location of published files
     asset_publish_area_photoshop: '@asset_root/publish/photoshop'
-    photoshop_asset_publish: '@asset_root/publish/photoshop/{name}.v{version}.psd'
+    photoshop_asset_publish: '@asset_root/publish/photoshop/{Asset}[-{name}]_v{version}.psd'
     
     
     #
@@ -377,13 +376,13 @@ paths:
     asset_publish_area_houdini: '@asset_root/publish/houdini'
 
     # The location of WIP files
-    houdini_asset_work: '@asset_root/work/houdini/{name}.v{version}.hip'
+    houdini_asset_work: '@asset_root/work/houdini/{Asset}[-{name}]_v{version}.hip'
 
     # The location of backups of WIP files
-    houdini_asset_snapshot: '@asset_root/work/houdini/snapshots/{name}.v{version}.{timestamp}.hip'
+    houdini_asset_snapshot: '@asset_root/work/houdini/snapshots/{Asset}[-{name}]_v{version}.{timestamp}.hip'
 
     # The location of published houdini files
-    houdini_asset_publish: '@asset_root/publish/houdini/{name}.v{version}.hip'
+    houdini_asset_publish: '@asset_root/publish/houdini/{Asset}[-{name}]_v{version}.hip'
 
     # Alembic caches
     houdini_asset_work_alembic_cache: '@asset_root/work/houdini/cache/alembic/{name}/v{version}/{Shot}_{name}_v{version}_{node}.abc'
@@ -403,13 +402,13 @@ paths:
     asset_publish_area_max: '@asset_root/publish/3dsmax'
     
     # The location of WIP files
-    max_asset_work: '@asset_root/work/3dsmax/{name}.v{version}.max'
+    max_asset_work: '@asset_root/work/3dsmax/{name}_v{version}.max'
 
     # The location of backups of WIP files
-    max_asset_snapshot: '@asset_root/work/3dsmax/snapshots/{name}.v{version}.{timestamp}.max'
+    max_asset_snapshot: '@asset_root/work/3dsmax/snapshots/{name}_v{version}.{timestamp}.max'
 
     # The location of published maya files
-    max_asset_publish: '@asset_root/publish/3dsmax/{name}.v{version}.max'
+    max_asset_publish: '@asset_root/publish/3dsmax/{name}_v{version}.max'
 
     #
     # Motionbuilder
@@ -444,13 +443,13 @@ paths:
     asset_quicktime_quick:   '@asset_root/review/quickdaily/{Asset}_{name}_{iteration}.mov'
 
     # The location of WIP script files
-    nuke_asset_work: '@asset_root/work/nuke/{name}.v{version}.nk'
+    nuke_asset_work: '@asset_root/work/nuke/{name}_v{version}.nk'
 
     # The location of backups of WIP files
-    nuke_asset_snapshot: '@asset_root/work/nuke/snapshots/{name}.v{version}.{timestamp}.nk'
+    nuke_asset_snapshot: '@asset_root/work/nuke/snapshots/{name}_v{version}.{timestamp}.nk'
 
     # The location of published nuke script files
-    nuke_asset_publish: '@asset_root/publish/nuke/{name}.v{version}.nk'
+    nuke_asset_publish: '@asset_root/publish/nuke/{name}_v{version}.nk'
 
     #
     # Softimage
@@ -463,13 +462,13 @@ paths:
     asset_publish_area_softimage: '@asset_root/publish/softimage'
 
     # The location of WIP files
-    softimage_asset_work: '@asset_root/work/softimage/{name}.v{version}.scn'
+    softimage_asset_work: '@asset_root/work/softimage/{name}_v{version}.scn'
 
     # The location of backups of WIP files
-    softimage_asset_snapshot: '@asset_root/work/softimage/snapshots/{name}.v{version}.{timestamp}.scn'
+    softimage_asset_snapshot: '@asset_root/work/softimage/snapshots/{name}_v{version}.{timestamp}.scn'
 
     # The location of published softimage files
-    softimage_asset_publish: '@asset_root/publish/softimage/{name}.v{version}.scn'
+    softimage_asset_publish: '@asset_root/publish/softimage/{name}_v{version}.scn'
 
 
 #
