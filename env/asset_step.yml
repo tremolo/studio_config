@@ -140,6 +140,10 @@ engines:
     - {app_instance: tk-multi-publish, name: Publish...}
   tk-maya:
     apps:
+      tk-maya-breakdown:
+        hook_multi_update: default
+        hook_scan_scene: default
+        location: {name: tk-maya-breakdown, type: app_store, version: v0.3.0}
       tk-multi-about: '@about'
       tk-multi-loader2:
         action_mappings:
@@ -258,6 +262,40 @@ engines:
     use_sgtk_as_menu_name: false
   tk-nuke:
     apps:
+      tk-maya-breakdown:
+        hook_multi_update: default
+        hook_scan_scene: default
+        location: {name: tk-maya-breakdown, type: app_store, version: v0.3.0}
+      tk-multi-about: '@about'
+      tk-multi-loader2:
+        action_mappings:
+          Maya Scene: [reference, import]
+          Photoshop Image: [texture_node]
+          Rendered Image: [texture_node]
+        actions_hook: '{self}/tk-maya_actions.py'
+        download_thumbnails: true
+        entities:
+        - caption: Assets
+          entity_type: Asset
+          filters:
+          - [project, is, '{context.project}']
+          hierarchy: [sg_asset_type, code]
+        - caption: Shots
+          entity_type: Shot
+          filters:
+          - [project, is, '{context.project}']
+          hierarchy: [sg_sequence, code]
+        - caption: My Tasks
+          entity_type: Task
+          filters:
+          - [task_assignees, is, '{context.user}']
+          - [project, is, '{context.project}']
+          hierarchy: [entity, content]
+        filter_publishes_hook: '{self}/filter_publishes.py'
+        location: {name: tk-multi-loader2, type: app_store, version: v1.1.0}
+        menu_name: Load
+        publish_filters: []
+        title_name: Loader
       tk-multi-about: '@about'
       tk-multi-loader2:
         action_mappings:
