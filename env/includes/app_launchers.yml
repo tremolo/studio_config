@@ -1,5 +1,6 @@
 includes: [./paths.yml, 'sequences/{Sequence}/{Shot}/sgtk_overrides.yml', 'assets/{sg_asset_type}/{Asset}/sgtk_overrides.yml']
 launch_3dsmax:
+  defer_keyword: ''
   engine: tk-3dsmax
   extra: {}
   hook_app_launch: default
@@ -7,7 +8,7 @@ launch_3dsmax:
   icon: '{target_engine}/icon_256.png'
   linux_args: ''
   linux_path: ''
-  location: {name: tk-multi-launchapp, type: app_store, version: v0.2.19}
+  location: {name: tk-multi-launchapp, type: app_store, version: v0.4.0}
   mac_args: ''
   mac_path: ''
   menu_name: Launch 3DSMax
@@ -15,6 +16,7 @@ launch_3dsmax:
   windows_args: ''
   windows_path: '@3dsmax_windows'
 launch_hiero:
+  defer_keyword: ''
   engine: tk-hiero
   extra: {}
   hook_app_launch: default
@@ -22,7 +24,7 @@ launch_hiero:
   icon: '{target_engine}/icon_256.png'
   linux_args: ''
   linux_path: '@hiero_linux'
-  location: {name: tk-multi-launchapp, type: app_store, version: v0.2.19}
+  location: {name: tk-multi-launchapp, type: app_store, version: v0.4.0}
   mac_args: ''
   mac_path: '@hiero_mac'
   menu_name: Launch Hiero
@@ -30,6 +32,7 @@ launch_hiero:
   windows_args: ''
   windows_path: '@hiero_win'
 launch_houdini:
+  defer_keyword: ''
   engine: tk-houdini
   extra: {}
   hook_app_launch: default
@@ -37,7 +40,7 @@ launch_houdini:
   icon: '{target_engine}/icon_256.png'
   linux_args: ''
   linux_path: '@houdini_linux'
-  location: {name: tk-multi-launchapp, type: app_store, version: v0.2.19}
+  location: {name: tk-multi-launchapp, type: app_store, version: v0.4.0}
   mac_args: ''
   mac_path: ''
   menu_name: Launch Houdini
@@ -45,6 +48,7 @@ launch_houdini:
   windows_args: ''
   windows_path: '@houdini_windows'
 launch_maya:
+  defer_keyword: ''
   engine: tk-maya
   extra: {}
   hook_app_launch: default
@@ -52,7 +56,7 @@ launch_maya:
   icon: '{target_engine}/icon_256.png'
   linux_args: ''
   linux_path: '@maya_linux'
-  location: {name: tk-multi-launchapp, type: app_store, version: v0.2.19}
+  location: {name: tk-multi-launchapp, type: app_store, version: v0.4.0}
   mac_args: ''
   mac_path: '@maya_mac'
   menu_name: Launch Maya
@@ -60,6 +64,7 @@ launch_maya:
   windows_args: ''
   windows_path: '@maya_windows'
 launch_motionbuilder:
+  defer_keyword: ''
   engine: tk-motionbuilder
   extra: {}
   hook_app_launch: default
@@ -67,7 +72,7 @@ launch_motionbuilder:
   icon: '{target_engine}/icon_256.png'
   linux_args: ''
   linux_path: ''
-  location: {name: tk-multi-launchapp, type: app_store, version: v0.2.19}
+  location: {name: tk-multi-launchapp, type: app_store, version: v0.4.0}
   mac_args: ''
   mac_path: ''
   menu_name: Launch MotionBuilder
@@ -75,6 +80,7 @@ launch_motionbuilder:
   windows_args: ''
   windows_path: '@motionbuilder_windows'
 launch_nuke:
+  defer_keyword: ''
   engine: tk-nuke
   extra: {}
   hook_app_launch: default
@@ -82,7 +88,7 @@ launch_nuke:
   icon: '{target_engine}/icon_256.png'
   linux_args: ''
   linux_path: '@nuke_linux'
-  location: {name: tk-multi-launchapp, type: app_store, version: v0.2.19}
+  location: {name: tk-multi-launchapp, type: app_store, version: v0.4.0}
   mac_args: ''
   mac_path: '@nuke_mac'
   menu_name: Launch Nuke
@@ -90,6 +96,7 @@ launch_nuke:
   windows_args: ''
   windows_path: '@nuke_windows'
 launch_photoshop:
+  defer_keyword: ''
   engine: tk-photoshop
   extra: '@photoshop_extras'
   hook_app_launch: default
@@ -97,7 +104,7 @@ launch_photoshop:
   icon: '{target_engine}/icon_256.png'
   linux_args: ''
   linux_path: ''
-  location: {name: tk-multi-launchapp, type: app_store, version: v0.2.19}
+  location: {name: tk-multi-launchapp, type: app_store, version: v0.4.0}
   mac_args: ''
   mac_path: '@photoshop_mac'
   menu_name: Launch Photoshop
@@ -119,6 +126,7 @@ launch_shotgun_screeningroom:
   rv_path_mac: '@rv_mac'
   rv_path_windows: '@rv_win'
 launch_softimage:
+  defer_keyword: ''
   engine: tk-softimage
   extra: {}
   hook_app_launch: default
@@ -126,7 +134,7 @@ launch_softimage:
   icon: '{target_engine}/icon_256.png'
   linux_args: ''
   linux_path: '@softimage_linux'
-  location: {name: tk-multi-launchapp, type: app_store, version: v0.2.19}
+  location: {name: tk-multi-launchapp, type: app_store, version: v0.4.0}
   mac_args: ''
   mac_path: ''
   menu_name: Launch Softimage

@@ -2,7 +2,7 @@
 # This file reflects the paths in the pipeline configuration
 # entity which is associated with this location
 
-Windows: 'Z:\Shotgun_Configs\RTS_Master'
+Windows: 'W:\WG\Shotgun_Configs\RTS_Master'
 Darwin: ''
 Linux: ''
 

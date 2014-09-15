@@ -17,36 +17,39 @@ from tank import Hook
 
 class PickEnvironment(Hook):
 
-    def execute(self, context, **kwargs):
-        """
-        The default implementation assumes there are three environments, called shot, asset 
-        and project, and switches to these based on entity type.
-        """
-        
-        if context.project is None:
-            # our context is completely empty! 
-            # don't know how to handle this case.
-            return None
-        
-        if context.entity is None:
-            # we have a project but not an entity
-            return "project"
-        
-        if context.entity and context.step is None:
-            # we have an entity but no step!
-            if context.entity["type"] == "Shot":
-                return "shot"
-            if context.entity["type"] == "Asset":
-                return "asset"            
-            if context.entity["type"] == "Sequence":
-                return "sequence"            
+	def execute(self, context, **kwargs):
+		"""
+		The default implementation assumes there are three environments, called shot, asset 
+		and project, and switches to these based on entity type.
+		"""
+		
+		if context.project is None:
+			# our context is completely empty! 
+			# don't know how to handle this case.
+			return None
+		
+		if context.entity is None:
+			# we have a project but not an entity
+			return "project"
+		
+		if context.entity and context.step is None:
+			# we have an entity but no step!
+			if context.entity["type"] == "Shot":
+				return "shot"
+			if context.entity["type"] == "Asset":
+				return "asset"
 
-            
-        if context.entity and context.step:
-            # we have a step and an entity
-            if context.entity["type"] == "Shot":
-                return "shot_step"
-            if context.entity["type"] == "Asset":
-                return "asset_step"
+			if context.entity["type"] == "Sequence":
+				return "sequence"
 
-        return None
+			
+		if context.entity and context.step:
+			# we have a step and an entity
+			if context.entity["type"] == "Shot":
+				return "shot_step"
+			if context.entity["type"] == "Asset":
+				# if context.step["name"] == "Ani":
+					# return "asset"
+				return "asset_step"
+
+		return None
