@@ -113,8 +113,13 @@ engines:
     - {app_instance: tk-hiero-openinshotgun, keep_in_menu: false, name: Open in Shotgun,
       requires_selection: true}
   tk-maya:
-    apps: {tk-multi-about: '@about', tk-multi-screeningroom: '@launch_screeningroom',
-      tk-multi-workfiles: '@workfiles-launch-at-startup'}
+    apps:
+      tk-multi-about: '@about'
+      tk-multi-screeningroom: '@launch_screeningroom'
+      tk-multi-workfiles: '@workfiles-launch-at-startup'
+      wtd-multi-shotloader:
+        location: {path: 'https://github.com/RichardTheStork/wtd-multi-shotloader.git',
+          type: git, version: v0.0.0, "disabled": true}
     compatibility_dialog_min_version: 2015
     debug_logging: false
     location: {name: tk-maya, type: app_store, version: v0.4.3}

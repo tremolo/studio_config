@@ -4,6 +4,6 @@
 
 Windows: 'W:\WG\Shotgun_Configs\RTS_Master'
 Darwin: ''
-Linux: ''
+Linux: '/srv/project/rts/WG/Shotgun_Configs/RTS_Master'
 
 # End of file.

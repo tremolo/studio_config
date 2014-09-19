@@ -51,5 +51,8 @@ class PickEnvironment(Hook):
 				# if context.step["name"] == "Ani":
 					# return "asset"
 				return "asset_step"
+			if context.entity["type"] == "Sequence":
+				return "sequence_step"
+
 
 		return None

@@ -225,7 +225,7 @@ class PublishHook(Hook):
 		specified publish info.
 		"""
 		# construct args:
-		args = {"tk": self.parent.tank,"context": context,"comment": comment,"path": path,"name": name,"version_number": publish_version,"thumbnail_path": thumbnail_path,"task": sg_task,"dependency_paths": dependency_paths,"published_file_type":tank_type,"user": self.parent.context.user}
+		args = {"tk": self.parent.tank,"context": context,"comment": comment,"path": path,"name": name,"version_number": publish_version,"thumbnail_path": thumbnail_path,"task": sg_task,"dependency_paths": dependency_paths,"published_file_type":tank_type,"user": self.parent.context.user,"created_by": self.parent.context.user}
 
 		# print args
 		# register publish;

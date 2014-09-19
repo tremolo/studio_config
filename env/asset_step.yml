@@ -254,7 +254,7 @@ engines:
         title_name: Loader
       tk-multi-positionlistExport:
         location: {path: 'https://github.com/RichardTheStork/tk-multi-positionlistExport.git',
-          type: git, version: v0.0.4}
+          type: git, version: v0.0.5}
       tk-multi-publish:
         allow_taskless_publishes: true
         display_name: Publish
@@ -298,9 +298,9 @@ engines:
         saveas_prefer_version_up: false
         sg_entity_type_extra_display_fields: {}
         sg_entity_type_filters: {}
-        sg_entity_types: [Shot, Asset]
+        sg_entity_types: [Sequence, Shot, Asset]
         sg_task_filters: []
-        task_extra_display_fields: []
+        task_extra_display_fields: [sg_task_order]
         template_publish: maya_asset_publish
         template_publish_area: asset_publish_area_maya
         template_work: maya_asset_work
@@ -622,4 +622,7 @@ frameworks:
     location: {name: tk-framework-widget, type: app_store, version: v0.1.19}
   tk-framework-widget_v0.1.22:
     location: {name: tk-framework-widget, type: app_store, version: v0.1.22}
+  tk-framework-widget_v0.x.x:
+    location: {name: tk-framework-wtd, path: 'https://github.com/RichardTheStork/tk-framework-wtd.git',
+      type: git, version: v0.0.3}
 includes: [./includes/app_launchers.yml, ./includes/common_apps.yml]

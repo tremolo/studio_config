@@ -101,7 +101,7 @@ paths:
     asset_root: _Library/{sg_asset_type}/{Asset}
     
     shot_root_Caches: //Caches/{Step}/{Sequence}/{Shot}
-    
+    seq_root_Caches: //Caches/{Step}/{Sequence}/
     shot_render_root: //Renders/Sequences/{Step}/{Sequence}/{Shot}
     asset_render_root: //Renders/_Library/{Step}/{sg_asset_type}/{Asset}
     
@@ -126,7 +126,15 @@ paths:
     
     ##########################################################################################
     # Sequence level paths 
-
+    # Data structures
+    seq_root_step: '@sequence_root/Steps/{Step}'
+    seq_data_root: '@sequence_root/data'
+    seq_positionlist: '@seq_data_root/positionlist/poslist_{SEQ}_v{version}.txt'
+    seq_camera_area: '@seq_data_root/camera'
+    seq_camera_step: '@seq_camera_area/{Step}'
+    seq_camera_maya_work: '@seq_camera_step/work/cam_{SEQ}_v{version}.ma' 
+    seq_camera_maya_publish: '@seq_camera_step/publish/cam_{SEQ}_v{version}.ma' 
+    
     #
     # Photoshop
     #
@@ -143,7 +151,36 @@ paths:
     sequence_publish_area_photoshop: '@sequence_root/publish/photoshop'
     photoshop_sequence_publish: '@sequence_publish_area_photoshop/{name}_v{version}.psd'
 
+    #
+    # Maya
+    #
 
+    # define the location of a work area
+    seq_work_area_maya: '@seq_root_step/work/maya'
+    
+    # # define the location of a publish area
+    seq_publish_area_maya: '@seq_root_step/publish/maya'
+
+    # # The location of WIP files ([_{name}])
+    maya_seq_work: '@seq_root_step/work/maya/{SEQ}_{Step}_v{version}.ma'
+
+    # # The location of backups of WIP files
+    maya_seq_snapshot: '@seq_root_step/work/maya/snapshots/{SEQ}[_{name}]_{Step}_v{version}.{timestamp}.ma'
+
+    # # The location of published maya files [_{name}Main]
+    maya_seq_publish: '@seq_root_step/publish/maya/{SEQ}_{Step}_v{version}.ma'
+    maya_seq_mesh_alembic_cache: '@seq_root_Caches/publish/maya/[_{grp_name}]_v{version}.abc'
+    maya_seq_mesh_MDD_cache: '@seq_root_Caches/publish/maya/[_{grp_name}]_v{version}.mdd'
+    maya_seq_mesh_PositionsList: '@seq_root_Caches/publish/maya/[_{SEQ}]_v{version}.txt'
+
+    # outputs from the Shotgun Write Node for assets
+    maya_seq_render: '@seq_root_step/work/images/{name}/v{version}/{width}x{height}/{SEQ}_{name}_{channel}_v{version}.{SEQ}.exr'
+    maya_seq_render_review_seq: '@seq_root_step/review/images/{name}/v{version}/{width}x{height}/{SEQ}_{name}_{channel}_v{version}.{iteration}.{SEQ}.exr'
+    maya_seq_render_pub: '@seq_root_step/publish/elements/{name}/v{version}/{width}x{height}/{SEQ}_{name}_{channel}_v{version}.{SEQ}.exr'
+
+    # review output
+    maya_seq_render_movie: '@seq_root_step/review/{SEQ}_{name}_{channel}_v{version}.mov'
+    seq_quicktime_quick:   '@seq_root_step/review/quickdaily/{SEQ}_{name}_{iteration}.mov'
 
     ##########################################################################################
     # Shot level paths q001
@@ -154,9 +191,10 @@ paths:
     shot_data_root: '@shot_root/data'
     shot_positionlist: '@shot_data_root/positionlist/poslist_{Shot}_v{version}.txt'
     shot_camera_area: '@shot_data_root/camera'
-    shot_camera_maya_publish: '@shot_camera_area/publish/cam_{Shot}_v{version}.ma'
-    shot_camera_publish: '@shot_camera_area/publish/cam_{Shot}_v{version}.abc'
-    shot_camera_work: '@shot_camera_area/work/cam_{Shot}_v{version}.ma'
+    shot_camera_step: '@shot_camera_area/{Step}'
+    shot_camera_maya_publish: '@shot_camera_step/publish/cam_{Shot}_v{version}.ma'
+    shot_camera_publish: '@shot_camera_step/publish/cam_{Shot}_v{version}.abc'
+    shot_camera_work: '@shot_camera_step/work/cam_{Shot}_v{version}.ma'
     # shot_camera: '@shot_camera_area/cam_{Shot}_v{version}.ma'
     # shot_camera_alembic: '@shot_camera_area/cam_{Shot}_v{version}.abc'
     
