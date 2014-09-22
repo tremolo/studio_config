@@ -162,25 +162,25 @@ paths:
     seq_publish_area_maya: '@seq_root_step/publish/maya'
 
     # # The location of WIP files ([_{name}])
-    maya_seq_work: '@seq_root_step/work/maya/{SEQ}_{Step}_v{version}.ma'
+    maya_seq_work: '@seq_root_step/work/maya/{Sequence}_{Step}_v{version}.ma'
 
     # # The location of backups of WIP files
-    maya_seq_snapshot: '@seq_root_step/work/maya/snapshots/{SEQ}[_{name}]_{Step}_v{version}.{timestamp}.ma'
+    maya_seq_snapshot: '@seq_root_step/work/maya/snapshots/{Sequence}[_{name}]_{Step}_v{version}.{timestamp}.ma'
 
     # # The location of published maya files [_{name}Main]
-    maya_seq_publish: '@seq_root_step/publish/maya/{SEQ}_{Step}_v{version}.ma'
+    maya_seq_publish: '@seq_root_step/publish/maya/{Sequence}_{Step}_v{version}.ma'
     maya_seq_mesh_alembic_cache: '@seq_root_Caches/publish/maya/[_{grp_name}]_v{version}.abc'
     maya_seq_mesh_MDD_cache: '@seq_root_Caches/publish/maya/[_{grp_name}]_v{version}.mdd'
-    maya_seq_mesh_PositionsList: '@seq_root_Caches/publish/maya/[_{SEQ}]_v{version}.txt'
+    maya_seq_mesh_PositionsList: '@seq_root_Caches/publish/maya/[_{Sequence}]_v{version}.txt'
 
     # outputs from the Shotgun Write Node for assets
-    maya_seq_render: '@seq_root_step/work/images/{name}/v{version}/{width}x{height}/{SEQ}_{name}_{channel}_v{version}.{SEQ}.exr'
-    maya_seq_render_review_seq: '@seq_root_step/review/images/{name}/v{version}/{width}x{height}/{SEQ}_{name}_{channel}_v{version}.{iteration}.{SEQ}.exr'
-    maya_seq_render_pub: '@seq_root_step/publish/elements/{name}/v{version}/{width}x{height}/{SEQ}_{name}_{channel}_v{version}.{SEQ}.exr'
+    maya_seq_render: '@seq_root_step/work/images/{name}/v{version}/{width}x{height}/{Sequence}_{name}_{channel}_v{version}.{SEQ}.exr'
+    maya_seq_render_review_seq: '@seq_root_step/review/images/{name}/v{version}/{width}x{height}/{Sequence}_{name}_{channel}_v{version}.{iteration}.{SEQ}.exr'
+    maya_seq_render_pub: '@seq_root_step/publish/elements/{name}/v{version}/{width}x{height}/{Sequence}_{name}_{channel}_v{version}.{SEQ}.exr'
 
     # review output
-    maya_seq_render_movie: '@seq_root_step/review/{SEQ}_{name}_{channel}_v{version}.mov'
-    seq_quicktime_quick:   '@seq_root_step/review/quickdaily/{SEQ}_{name}_{iteration}.mov'
+    maya_seq_render_movie: '@seq_root_step/review/{Sequence}_{name}_{channel}_v{version}.mov'
+    seq_quicktime_quick:   '@seq_root_step/review/quickdaily/{Sequence}_{name}_{iteration}.mov'
 
     ##########################################################################################
     # Shot level paths q001

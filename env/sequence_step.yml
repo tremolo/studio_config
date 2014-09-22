@@ -284,7 +284,7 @@ engines:
         template_work: maya_shot_work
         tk-multi-screeningroom: '@launch_screeningroom'
       tk-multi-setframerange:
-        location: {name: tk-multi-setframerange, type: app_store, version: v0.2.2}
+        location: {name: tk-multi-setframerange, type: app_store, version: v0.2.2, disabled: true}
         sg_in_frame_field: sg_cut_in
         sg_out_frame_field: sg_cut_out
       tk-multi-snapshot:
@@ -311,10 +311,10 @@ engines:
         sg_entity_types: [Sequence ,Shot, Asset]
         sg_task_filters: []
         task_extra_display_fields: []
-        template_publish: maya_shot_publish
-        template_publish_area: shot_publish_area_maya
-        template_work: maya_shot_work
-        template_work_area: shot_work_area_maya
+        template_publish: maya_seq_publish
+        template_publish_area: seq_publish_area_maya
+        template_work: maya_seq_work
+        template_work_area: seq_work_area_maya
     compatibility_dialog_min_version: 2015
     debug_logging: false
     location: {name: tk-maya, type: app_store, version: v0.4.3}

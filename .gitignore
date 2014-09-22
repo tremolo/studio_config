@@ -9,6 +9,7 @@ pipeline_configuration.yml
 *.exe
 *.o
 *.so
+*.pyc
  
 # Packages #
 ############
