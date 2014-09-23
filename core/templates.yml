@@ -129,11 +129,11 @@ paths:
     # Data structures
     seq_root_step: '@sequence_root/Steps/{Step}'
     seq_data_root: '@sequence_root/data'
-    seq_positionlist: '@seq_data_root/positionlist/poslist_{SEQ}_v{version}.txt'
+    seq_positionlist: '@seq_data_root/positionlist/poslist_{Sequence}_v{version}.txt'
     seq_camera_area: '@seq_data_root/camera'
     seq_camera_step: '@seq_camera_area/{Step}'
-    seq_camera_maya_work: '@seq_camera_step/work/cam_{SEQ}_v{version}.ma' 
-    seq_camera_maya_publish: '@seq_camera_step/publish/cam_{SEQ}_v{version}.ma' 
+    seq_camera_maya_work: '@seq_camera_step/work/cam_{Sequence}_v{version}.ma' 
+    seq_camera_maya_publish: '@seq_camera_step/publish/cam_{Sequence}_v{version}.ma' 
     
     #
     # Photoshop
