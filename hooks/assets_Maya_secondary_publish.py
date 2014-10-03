@@ -136,7 +136,7 @@ class PublishHook(Hook):
 		# with the publish template:
 		model_workfile_path = work_template.apply_fields(fields)
 		
-		publish_version = fields["version"] -1
+		publish_version = fields["version"]
 		fields["version"] = publish_version
 		model_publish_path = publish_template.apply_fields(fields)
 		progress_cb(10)
@@ -185,7 +185,8 @@ class PublishHook(Hook):
 			progress_cb(45)
 			
 			print 'parenting meshes again...'
-			cmds.parent(groupName, objectName)
+			cmds.parent(sel, objectName)
+			cmds.delete(groupName)
 			print 'export done...'
 			
 		except Exception, e:

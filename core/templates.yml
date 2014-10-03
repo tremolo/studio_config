@@ -98,11 +98,12 @@ paths:
 
     sequence_root: //Sequences/{Sequence}
     shot_root: '@sequence_root/{Shot}'
-    asset_root: _Library/{sg_asset_type}/{Asset}
+    asset_root: //_Library/{sg_asset_type}/{Asset}
     
     shot_root_Caches: //Caches/{Step}/{Sequence}/{Shot}
     seq_root_Caches: //Caches/{Step}/{Sequence}/
-    shot_render_root: //Renders/Sequences/{Step}/{Sequence}/{Shot}
+    seq_render_root: //Renders/Sequences/{Step}/{Sequence}
+    shot_render_root: //Renders/Shots/{Step}/{Sequence}/{Shot}
     asset_render_root: //Renders/_Library/{Step}/{sg_asset_type}/{Asset}
     
     ##########################################################################################
@@ -141,15 +142,15 @@ paths:
 
 
     # The location of WIP files
-    sequence_work_area_photoshop: '@sequence_root/work/photoshop'
-    photoshop_sequence_work: '@sequence_work_area_photoshop/{name}_v{version}.psd'
+    sequence_work_area_photoshop: '@seq_root_step/work/photoshop'
+    photoshop_sequence_work: '@sequence_work_area_photoshop/{Sequence}_{Step}[_{name}]_v{version}.psd'
 
     # The location of backups of WIP files
-    photoshop_sequence_snapshot: '@sequence_work_area_photoshop/snapshots/{name}_v{version}.{timestamp}.psd'
+    photoshop_sequence_snapshot: '@sequence_work_area_photoshop/snapshots/{Sequence}_{Step}[_{name}]_v{version}.psd'
 
     # The location of published files
-    sequence_publish_area_photoshop: '@sequence_root/publish/photoshop'
-    photoshop_sequence_publish: '@sequence_publish_area_photoshop/{name}_v{version}.psd'
+    sequence_publish_area_photoshop: '@seq_root_step/publish/photoshop'
+    photoshop_sequence_publish: '@sequence_publish_area_photoshop/{Sequence}_{Step}[_{name}]_v{version}.psd'
 
     #
     # Maya
@@ -173,14 +174,15 @@ paths:
     maya_seq_mesh_MDD_cache: '@seq_root_Caches/publish/maya/[_{grp_name}]_v{version}.mdd'
     maya_seq_mesh_PositionsList: '@seq_root_Caches/publish/maya/[_{Sequence}]_v{version}.txt'
 
-    # outputs from the Shotgun Write Node for assets
-    maya_seq_render: '@seq_root_step/work/images/{name}/v{version}/{width}x{height}/{Sequence}_{name}_{channel}_v{version}.{SEQ}.exr'
-    maya_seq_render_review_seq: '@seq_root_step/review/images/{name}/v{version}/{width}x{height}/{Sequence}_{name}_{channel}_v{version}.{iteration}.{SEQ}.exr'
-    maya_seq_render_pub: '@seq_root_step/publish/elements/{name}/v{version}/{width}x{height}/{Sequence}_{name}_{channel}_v{version}.{SEQ}.exr'
+    # outputs from the Shotgun Write Node for sequences
+    maya_seq_render_playblast: '@seq_render_root/work/maya/v{version}/{width}x{height}/{Sequence}[_{name}][_{channel}]_v{version}'
+    maya_seq_render: '@seq_render_root/work/images/{name}/v{version}/{width}x{height}/{Sequence}_{name}_{channel}_v{version}.{SEQ}.exr'
+    maya_seq_render_review_seq: '@seq_render_root/review/images/{name}/v{version}/{width}x{height}/{Sequence}_{name}_{channel}_v{version}.{iteration}.{SEQ}.exr'
+    maya_seq_render_pub: '@seq_render_root/publish/elements/{name}/v{version}/{width}x{height}/{Sequence}_{name}_{channel}_v{version}.{SEQ}.exr'
 
     # review output
-    maya_seq_render_movie: '@seq_root_step/review/{Sequence}_{name}_{channel}_v{version}.mov'
-    seq_quicktime_quick:   '@seq_root_step/review/quickdaily/{Sequence}_{name}_{iteration}.mov'
+    maya_seq_render_movie: '@seq_render_root/review/{Sequence}_{name}_{channel}_v{version}.mov'
+    seq_quicktime_quick:   '@seq_render_root/review/quickdaily/{Sequence}_{name}_{iteration}.mov'
 
     ##########################################################################################
     # Shot level paths q001
@@ -234,6 +236,13 @@ paths:
     maya_shot_mesh_alembic_cache: '@shot_root_Caches/publish/maya/[_{grp_name}]_v{version}.abc'
     maya_shot_mesh_MDD_cache: '@shot_root_Caches/publish/maya/[_{grp_name}]_v{version}.mdd'
     maya_shot_mesh_PositionsList: '@shot_root_Caches/publish/maya/[_{Shot}]_v{version}.txt'
+
+    # outputs from the Shotgun Write Node for shots
+    maya_shot_render_playblast: '@shot_render_root/work/maya/v{version}/{width}x{height}/{Shot}[-{name}]_v{version}'
+    maya_shot_render: '@shot_render_root/work/images/{name}/v{version}/{width}x{height}/{Shot}_{name}_{channel}_v{version}.{SEQ}.exr'
+    maya_shot_render_review_seq: '@shot_render_root/review/images/{name}/v{version}/{width}x{height}/{Shot}_{name}_{channel}_v{version}.{iteration}.{SEQ}.exr'
+    maya_shot_render_pub: '@shot_render_root/publish/elements/{name}/v{version}/{width}x{height}/{Shot}_{name}_{channel}_v{version}.{SEQ}.exr'
+
     #
     # Houdini
     #
@@ -405,6 +414,7 @@ paths:
     maya_asset_publish: '@asset_publish_area_maya/{Asset}_{Step}_v{version}.ma'
 
     # maya render outputs for assets
+    maya_asset_render_playblast: '@asset_render_root/work/maya/v{version}/{Asset}[-{name}]_v{version}'
     maya_asset_render: '@asset_render_root/publish/maya/v{version}/{Asset}_{Step}_v{version}.{SEQ}.png'
     maya_asset_quicktime:   '@asset_render_root/review/maya/{Asset}_{Step}_v{version}.mov'
     

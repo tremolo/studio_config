@@ -202,7 +202,15 @@ engines:
       tk-maya-breakdown:
         hook_multi_update: default
         hook_scan_scene: default
-        location: {name: tk-maya-breakdown, type: app_store, version: v0.3.0}
+        hook_scene_operations: '{self}/tk-maya_scene_operations.py'
+        location: {name: tk-multi-breakdown, type: app_store, version: v1.1.0}
+      tk-maya-playblast:
+        current_scene_template: maya_shot_work
+        height: 936
+        location: {disabled: false, path: 'https://github.com/RichardTheStork/tk-maya-playblast.git',
+          type: git, version: v0.0.2}
+        playblast_template: maya_shot_render_playblast
+        width: 1724
       tk-multi-about: '@about'
       tk-multi-loader2:
         action_mappings:
@@ -310,7 +318,7 @@ engines:
         sg_entity_type_filters: {}
         sg_entity_types: [Sequence, Shot, Asset]
         sg_task_filters: []
-        task_extra_display_fields: []
+        task_extra_display_fields: [sg_task_order]
         template_publish: maya_shot_publish
         template_publish_area: shot_publish_area_maya
         template_work: maya_shot_work
@@ -560,7 +568,7 @@ engines:
         saveas_prefer_version_up: false
         sg_entity_type_extra_display_fields: {}
         sg_entity_type_filters: {}
-        sg_entity_types: [Shot, Asset]
+        sg_entity_types: [Sequence, Shot, Asset]
         sg_task_filters: []
         task_extra_display_fields: []
         template_publish: photoshop_shot_publish

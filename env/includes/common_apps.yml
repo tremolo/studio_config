@@ -34,7 +34,7 @@ workfiles:
   sg_entity_type_filters: {}
   sg_entity_types: [Sequence, Shot, Asset]
   sg_task_filters: []
-  task_extra_display_fields: []
+  task_extra_display_fields: [sg_task_order]
   template_publish: null
   template_publish_area: null
   template_work: null
@@ -55,7 +55,7 @@ workfiles-launch-at-startup:
   sg_entity_type_filters: {}
   sg_entity_types: [Sequence, Shot, Asset]
   sg_task_filters: []
-  task_extra_display_fields: []
+  task_extra_display_fields: [sg_task_order]
   template_publish: null
   template_publish_area: null
   template_work: null
