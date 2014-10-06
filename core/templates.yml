@@ -143,14 +143,14 @@ paths:
 
     # The location of WIP files
     sequence_work_area_photoshop: '@seq_root_step/work/photoshop'
-    photoshop_sequence_work: '@sequence_work_area_photoshop/{Sequence}_{Step}[_{name}]_v{version}.psd'
+    photoshop_sequence_work: '@sequence_work_area_photoshop/{Sequence}_{Step}[-{name}]_v{version}.psd'
 
     # The location of backups of WIP files
-    photoshop_sequence_snapshot: '@sequence_work_area_photoshop/snapshots/{Sequence}_{Step}[_{name}]_v{version}.psd'
+    photoshop_sequence_snapshot: '@sequence_work_area_photoshop/snapshots/{Sequence}_{Step}[-{name}]_v{version}.psd'
 
     # The location of published files
     sequence_publish_area_photoshop: '@seq_root_step/publish/photoshop'
-    photoshop_sequence_publish: '@sequence_publish_area_photoshop/{Sequence}_{Step}[_{name}]_v{version}.psd'
+    photoshop_sequence_publish: '@sequence_publish_area_photoshop/{Sequence}[-{name}]_{Step}_v{version}.psd'
 
     #
     # Maya
@@ -162,11 +162,11 @@ paths:
     # # define the location of a publish area
     seq_publish_area_maya: '@seq_root_step/publish/maya'
 
-    # # The location of WIP files ([_{name}])
+    # # The location of WIP files ([-{name}])
     maya_seq_work: '@seq_root_step/work/maya/{Sequence}_{Step}_v{version}.ma'
 
     # # The location of backups of WIP files
-    maya_seq_snapshot: '@seq_root_step/work/maya/snapshots/{Sequence}[_{name}]_{Step}_v{version}.{timestamp}.ma'
+    maya_seq_snapshot: '@seq_root_step/work/maya/snapshots/{Sequence}[-{name}]_{Step}_v{version}.{timestamp}.ma'
 
     # # The location of published maya files [_{name}Main]
     maya_seq_publish: '@seq_root_step/publish/maya/{Sequence}_{Step}_v{version}.ma'
@@ -175,14 +175,18 @@ paths:
     maya_seq_mesh_PositionsList: '@seq_root_Caches/publish/maya/[_{Sequence}]_v{version}.txt'
 
     # outputs from the Shotgun Write Node for sequences
-    maya_seq_render_playblast: '@seq_render_root/work/maya/v{version}/{width}x{height}/{Sequence}[_{name}][_{channel}]_v{version}'
-    maya_seq_render: '@seq_render_root/work/images/{name}/v{version}/{width}x{height}/{Sequence}_{name}_{channel}_v{version}.{SEQ}.exr'
-    maya_seq_render_review_seq: '@seq_render_root/review/images/{name}/v{version}/{width}x{height}/{Sequence}_{name}_{channel}_v{version}.{iteration}.{SEQ}.exr'
-    maya_seq_render_pub: '@seq_render_root/publish/elements/{name}/v{version}/{width}x{height}/{Sequence}_{name}_{channel}_v{version}.{SEQ}.exr'
+    maya_seq_render_playblast: '@seq_render_root/work/maya/v{version}/{width}x{height}/{Sequence}[-{name}][_{channel}]_v{version}'
+    maya_seq_playblast_area: '@seq_render_root/work/maya/v{version}/playblast'
+    maya_seq_playblast_for_maya: '@maya_seq_playblast_area/{width}x{height}/{Shot}[-{name}]'
+    maya_seq_playblast: '@maya_seq_playblast_for_maya.{SEQ}.png'
+    maya_seq_playblast_mov: '@seq_render_root/review/maya/v{version}/playblast/{width}x{height}/{Sequence}[-{name}].mov'
+    maya_seq_render: '@seq_render_root/work/maya/v{version}/{width}x{height}/{Sequence}_{name}_{channel}_v{version}.{SEQ}.exr'
+    ## maya_seq_render_review_seq: '@seq_render_root/review/images/{name}/v{version}/{width}x{height}/{Sequence}_{name}_{channel}_v{version}.{iteration}.{SEQ}.exr'
+    ## maya_seq_render_pub: '@seq_render_root/publish/elements/{name}/v{version}/{width}x{height}/{Sequence}_{name}_{channel}_v{version}.{SEQ}.exr'
 
     # review output
-    maya_seq_render_movie: '@seq_render_root/review/{Sequence}_{name}_{channel}_v{version}.mov'
-    seq_quicktime_quick:   '@seq_render_root/review/quickdaily/{Sequence}_{name}_{iteration}.mov'
+    maya_seq_render_movie: '@seq_render_root/review/{Sequence}[-{name}][_{channel}]_v{version}.mov'
+    ##seq_quicktime_quick:   '@seq_render_root/review/quickdaily/{Sequence}_{name}_{iteration}.mov'
 
     ##########################################################################################
     # Shot level paths q001
@@ -213,7 +217,7 @@ paths:
 
     # The location of published files
     shot_publish_area_photoshop: '@shot_root_step/publish/photoshop'
-    photoshop_shot_publish: '@shot_publish_area_photoshop/{Shot}_{name}_v{version}.psd'
+    photoshop_shot_publish: '@shot_publish_area_photoshop/{Shot}[-{name}]_{Step}_v{version}.psd'
 
     #
     # Maya
@@ -225,11 +229,11 @@ paths:
     # define the location of a publish area
     shot_publish_area_maya: '@shot_root_step/publish/maya'
 
-    # The location of WIP files ([_{name}])
+    # The location of WIP files ([-{name}])
     maya_shot_work: '@shot_root_step/work/maya/{Shot}_{Step}_v{version}.ma'
 
     # The location of backups of WIP files
-    maya_shot_snapshot: '@shot_root_step/work/maya/snapshots/{Shot}[_{name}]_{Step}_v{version}.{timestamp}.ma'
+    maya_shot_snapshot: '@shot_root_step/work/maya/snapshots/{Shot}[-{name}]_{Step}_v{version}.{timestamp}.ma'
 
     # The location of published maya files [_{name}Main]
     maya_shot_publish: '@shot_root_step/publish/maya/{Shot}_{Step}_v{version}.ma'
@@ -239,6 +243,10 @@ paths:
 
     # outputs from the Shotgun Write Node for shots
     maya_shot_render_playblast: '@shot_render_root/work/maya/v{version}/{width}x{height}/{Shot}[-{name}]_v{version}'
+    maya_shot_playblast_area: '@shot_render_root/work/maya/v{version}/playblast'
+    maya_shot_playblast_for_maya: '@maya_shot_playblast_area/{width}x{height}/{Shot}[-{name}]'
+    maya_shot_playblast: '@maya_shot_playblast_for_maya.{SEQ}.png'
+    maya_shot_playblast_mov: '@shot_render_root/review/maya/v{version}/playblast/{width}x{height}/{Shot}[-{name}].mov'
     maya_shot_render: '@shot_render_root/work/images/{name}/v{version}/{width}x{height}/{Shot}_{name}_{channel}_v{version}.{SEQ}.exr'
     maya_shot_render_review_seq: '@shot_render_root/review/images/{name}/v{version}/{width}x{height}/{Shot}_{name}_{channel}_v{version}.{iteration}.{SEQ}.exr'
     maya_shot_render_pub: '@shot_render_root/publish/elements/{name}/v{version}/{width}x{height}/{Shot}_{name}_{channel}_v{version}.{SEQ}.exr'
@@ -383,17 +391,18 @@ paths:
     #
 
     # The location of WIP files
-    photoshop_asset_work: '@asset_root_step/work/photoshop/{Asset}[-{name}]_v{version}.psd'
     asset_work_area_photoshop: '@asset_root_step/work/photoshop'
+    photoshop_asset_work: '@asset_root_step/work/photoshop/{Asset}[-{name}]_v{version}.psd'
+    photoshop_asset_work_exr: '@asset_root_step/work/photoshop/{Asset}[-{name}]_v{version}[_{channel}].exr'
 
     # The location of backups of WIP files
     photoshop_asset_snapshot: '@asset_root_step/work/photoshop/snapshots/{Asset}[-{name}]_v{version}.{timestamp}.psd'
 
     # The location of published files
     asset_publish_area_photoshop: '@asset_root_step/publish/photoshop'
-    photoshop_asset_publish: '@asset_root_step/publish/photoshop/{Asset}[-{name}]_v{version}.psd'
-    
-    
+    photoshop_asset_publish: '@asset_root_step/publish/photoshop/{Asset}[-{name}]_{Step}_v{version}.psd'
+    photoshop_asset_publish_exr: '@asset_root_step/publish/photoshop/{Asset}[-{name}]_v{version}[_{channel}].exr'
+
     #
     # Maya
     #
