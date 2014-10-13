@@ -175,10 +175,9 @@ paths:
     maya_seq_mesh_PositionsList: '@seq_root_Caches/publish/maya/[_{Sequence}]_v{version}.txt'
 
     # outputs from the Shotgun Write Node for sequences
-    maya_seq_render_playblast: '@seq_render_root/work/maya/v{version}/{width}x{height}/{Sequence}[-{name}][_{channel}]_v{version}'
+    maya_seq_render_playblast: '@seq_render_root/work/maya/v{version}/{width}x{height}/{Shot}_{Step}[-{name}]_v{version}'
     maya_seq_playblast_area: '@seq_render_root/work/maya/v{version}/playblast'
-    maya_seq_playblast_for_maya: '@maya_seq_playblast_area/{width}x{height}/{Shot}[-{name}]'
-    maya_seq_playblast: '@maya_seq_playblast_for_maya.{SEQ}.png'
+    maya_seq_playblast: '@maya_seq_playblast_area/{width}x{height}/{Shot}_{Step}[-{name}].{SEQ}.png'
     maya_seq_playblast_mov: '@seq_render_root/review/maya/v{version}/playblast/{width}x{height}/{Sequence}[-{name}]_v{version}.mov'
     maya_seq_render: '@seq_render_root/work/maya/v{version}/{width}x{height}/{Sequence}_{name}_{channel}_v{version}.{SEQ}.exr'
     ## maya_seq_render_review_seq: '@seq_render_root/review/images/{name}/v{version}/{width}x{height}/{Sequence}_{name}_{channel}_v{version}.{iteration}.{SEQ}.exr'
@@ -244,8 +243,7 @@ paths:
     # outputs from the Shotgun Write Node for shots
     maya_shot_render_playblast: '@shot_render_root/work/maya/v{version}/{width}x{height}/{Shot}[-{name}]_v{version}'
     maya_shot_playblast_area: '@shot_render_root/work/maya/v{version}/playblast'
-    maya_shot_playblast_for_maya: '@maya_shot_playblast_area/{width}x{height}/{Shot}[-{name}]'
-    maya_shot_playblast: '@maya_shot_playblast_for_maya.{SEQ}.png'
+    maya_shot_playblast: '@maya_shot_playblast_area/{width}x{height}/{Shot}[-{name}].{SEQ}.png'
     maya_shot_playblast_mov: '@shot_render_root/review/maya/v{version}/playblast/{width}x{height}/{Shot}[-{name}]_v{version}.mov'
     maya_shot_render: '@shot_render_root/work/images/{name}/v{version}/{width}x{height}/{Shot}_{name}_{channel}_v{version}.{SEQ}.exr'
     maya_shot_render_review_seq: '@shot_render_root/review/images/{name}/v{version}/{width}x{height}/{Shot}_{name}_{channel}_v{version}.{iteration}.{SEQ}.exr'
@@ -392,8 +390,9 @@ paths:
 
     # The location of WIP files
     asset_work_area_photoshop: '@asset_root_step/work/photoshop'
-    photoshop_asset_work: '@asset_root_step/work/photoshop/{Asset}[-{name}]_v{version}.psd'
+    photoshop_asset_work: '@asset_root_step/work/photoshop/{Asset}[-{name}]_{Step}_v{version}.psd'
     photoshop_asset_work_exr: '@asset_root_step/work/photoshop/{Asset}[-{name}]_v{version}[_{channel}].exr'
+    photoshop_asset_work_png: '@asset_root_step/work/photoshop/{Asset}[-{name}]_v{version}[_{channel}].png'
 
     # The location of backups of WIP files
     photoshop_asset_snapshot: '@asset_root_step/work/photoshop/snapshots/{Asset}[-{name}]_v{version}.{timestamp}.psd'
@@ -402,6 +401,7 @@ paths:
     asset_publish_area_photoshop: '@asset_root_step/publish/photoshop'
     photoshop_asset_publish: '@asset_root_step/publish/photoshop/{Asset}[-{name}]_{Step}_v{version}.psd'
     photoshop_asset_publish_exr: '@asset_root_step/publish/photoshop/{Asset}[-{name}]_v{version}[_{channel}].exr'
+    photoshop_asset_publish_png: '@asset_root_step/publish/photoshop/{Asset}[-{name}]_v{version}[_{channel}].png'
 
     #
     # Maya

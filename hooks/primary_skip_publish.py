@@ -559,7 +559,7 @@ class PrimaryPublishHook(Hook):
         fields["TankType"] = output["tank_type"]
         publish_template = output["publish_template"]
         publish_path = publish_template.apply_fields(fields)
-        
+        """
         if os.path.exists(publish_path):
             raise TankError("The published file named '%s' already exists!" % publish_path)
         
@@ -637,7 +637,7 @@ class PrimaryPublishHook(Hook):
             os.remove(jpg_pub_path)
         except:
             pass
-        
+        """
         progress_cb(100)
         
         return publish_path
