@@ -237,7 +237,7 @@ engines:
         current_scene_template: maya_seq_work
         height: 936
         location: {path: 'https://github.com/RichardTheStork/tk-maya-playblast.git',
-          type: git, version: v0.0.2, disabled: false}
+          type: git, version: v0.0.2, disabled: true}
         playblast_template: maya_seq_render_playblast
         width: 1724
       tk-multi-about: '@about'

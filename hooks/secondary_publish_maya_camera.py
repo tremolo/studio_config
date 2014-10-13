@@ -95,7 +95,57 @@ class PublishHook(Hook):
 													A list of error messages (strings) to report    
 										}
 		"""
+		def FindFirstImageOfSequence(FolderPath):
+			ImgsList=[]
+			for file in (os.listdir(FolderPath)):
+				SeqImgName = str.split(str(file),".")[1]
+				ImgsList.append(SeqImgName)
+			First_elmnt=ImgsList[0]
+			return First_elmnt
+			
+		def FindFirstImageOfSequence(FolderPath):
+			ImgsList=[]
+			for file in (os.listdir(FolderPath)):
+				if file.endswith(".png"):
+					SeqImgName = str.split(str(file),".")[1]
+					ImgsList.append(int(SeqImgName))
+				First_elmnt=ImgsList[0]
+			return First_elmnt
 
+		def FindLastImageOfSequence(FolderPath):
+			ImgsList=[]
+			for file in (os.listdir(FolderPath)):
+				if file.endswith(".png"):
+					SeqImgName = str.split(str(file),".")[1]
+					ImgsList.append(int(SeqImgName))
+				Last_elmnt=ImgsList[-1]
+			return Last_elmnt
+			
+		def FindLengthOfSequence(FolderPath):
+			ImgsList=[]
+			for file in (os.listdir(FolderPath)):
+				if file.endswith(".png"):
+					SeqImgName = str.split(str(file),".")[1]
+					ImgsList.append(int(SeqImgName))
+				Length_seq=len(ImgsList)
+			return Length_seq
+			
+		def MakeListOfSequence(FolderPath):
+			ImgsList=[]
+			for file in (os.listdir(FolderPath)):
+				if file.endswith(".png"):
+					SeqImgName = str.split(str(file),".")[1]
+					ImgsList.append(int(SeqImgName))
+			return ImgsList
+
+		def FindMissingFramesFromSequence(SequenceSet,inputStart,inputEnd):
+			# my_list= list(range( int(FindFirstImageOfSequence(os.path.dirname(RenderPath)))	, int(FindLastImageOfSequence(os.path.dirname(RenderPath)))	 ))
+			my_list= list(range( inputStart, inputEnd))
+			MissingFrames =  set(my_list)-set(SequenceSet)
+			return sorted(MissingFrames)
+			
+
+	
 		wtd_fw = self.load_framework("tk-framework-wtd_v0.x.x")
 		ffmpeg = wtd_fw.import_module("pipeline.ffmpeg")
 		# ffmpeg.test()
@@ -111,14 +161,26 @@ class PublishHook(Hook):
 
 		pbShots = []
 		pbOrders = []
+		CutInList = []
+		
+		# SERVER_PATH = 'https://rts.shotgunstudio.com'
+		# SCRIPT_USER = 'AutomateStatus_TD'
+		# SCRIPT_KEY = '8119086c65905c39a5fd8bb2ad872a9887a60bb955550a8d23ca6c01a4d649fb'
+		
+		# sg = sgtk.api.shotgun.Shotgun(SERVER_PATH, SCRIPT_USER, SCRIPT_KEY)	
+		# filters = [ ['project','is', {'type':'Project','id':66}],
+			# ['entity','is',sht],
+			# ['content','is','Board'] ]
+		# taskName = sg.find_one('Task',filters)
 
 		# get extra shot info through shotgun
 		fields = ['id']
 		sequence_id = self.parent.shotgun.find('Sequence',[['code', 'is','q340' ]], fields)[0]['id']
 		fields = ['id', 'code', 'sg_asset_type','sg_cut_order','sg_cut_in','sg_cut_out']
 		filters = [['sg_sequence', 'is', {'type':'Sequence','id':sequence_id}]]
+		# stepfilters = [['step', 'is', {'type':'Step','id':sequence_id}]]
 		assets= self.parent.shotgun.find("Shot",filters,fields)
-
+		# StepName = ['step']
 		results = []
 		# publish all tasks:
 		noOverscan = False
@@ -142,6 +204,7 @@ class PublishHook(Hook):
 						pbShot = str.split(sht['code'],"_")[1]
 						print(shotTask +"(shot nr) corresponds to order number "+str(pbShot))
 						pbShots += [pbShot]
+						CutInList += [sht['sg_cut_in']]
 					else:
 						# errors.append(str.split(sht['code'],"_")[1]+"   !=    "+shotTask)        
 						pass
@@ -177,7 +240,7 @@ class PublishHook(Hook):
 		scenePath = cmds.file(q=True,sceneName=True)
 		scene_template = tk.template_from_path(scenePath)
 		flds = scene_template.get_fields(scenePath)
-		flds['width'] = 1734
+		flds['width'] = 1724
 		flds['height'] = 936
 		pb_template = tk.templates["maya_seq_playblast"]
 
@@ -185,26 +248,27 @@ class PublishHook(Hook):
 		#for pbOrderNr in pbOrderNrs:
 		for pbOrderNr in pbOrders:
 			pbShot = pbShots[i]
+			CutIn = CutInList[i]
 			i += 1
-			flds['Shot'] = flds['Sequence']+"_"+ pbShot
-			# flds['Shot'] = pbOrderNr
+			#flds['Shot'] = flds['Sequence']+"_"+ pbShot
+			flds['Shot'] = flds['Sequence']
 			shotCam = cmds.shot(pbOrderNr, q=True, currentCamera=True)
 			overscanValue = cmds.getAttr(shotCam+".overscan")
 			if noOverscan:
-				print "KQKQQQAAAAAAAAAAAAAAAAAAA"
+				#print "KQKQQQAAAAAAAAAAAAAAAAAAA"
 				cmds.setAttr(shotCam+".overscan", 1)
 				print (shotCam+"  overscan is set to 1")
 			
 			pbPath = pb_template.apply_fields(flds)
 			pbPath = str.split(str(pbPath),".")[0]
-			ffmpegPath = pb_template.apply_fields(flds)
+			RenderPath = pb_template.apply_fields(flds)
 			# report progress:
 			progress_cb(0, "Publishing", task)
 
 			shotStart = cmds.shot(pbOrderNr,q=True,sequenceStartTime=True)
 			shotEnd = cmds.shot(pbOrderNr,q=True,sequenceEndTime=True)
 			progress_cb(25, "Making playblast %s" %pbOrderNr)
-			cmds.playblast(indexFromZero=resetCutIn,filename=(pbPath),fmt="iff",compression="png",wh=(flds['width'], flds['height']),startTime=shotStart,endTime=shotEnd,sequenceTime=1,forceOverwrite=True, clearCache=1,showOrnaments=0,percent=100,offScreen=True,viewer=False,useTraxSounds=True)
+			cmds.playblast(indexFromZero=False,filename=(pbPath),fmt="iff",compression="png",wh=(flds['width'], flds['height']),startTime=shotStart,endTime=shotEnd,sequenceTime=1,forceOverwrite=True, clearCache=1,showOrnaments=0,percent=100,offScreen=True,viewer=False,useTraxSounds=True)
 			progress_cb(50, "Placing Slates %s" %pbOrderNr)
 			
 			cmds.setAttr(shotCam+".overscan", overscanValue)
@@ -214,13 +278,36 @@ class PublishHook(Hook):
 			todaystr = today.isoformat()
 			#Get USER
 			USER = sgtk.util.get_current_user(tk)
-						
+			# os.environ.get('FFMPEG_PATH')
+			# os.getenv('KEY_THAT_MIGHT_EXIST', default_value)
+			
+			ffmpegPath =r"%FFMPEG_PATH%/ffmpeg"
+			# ffmpegPath =os.environ.get('FFMPEG_PATH')
+			
+			
 			for i in range(int(shotStart),int(shotEnd)+1):
-				FirstPartName = ffmpegPath.split( '%04d' )[0]
-				EndPartName = ffmpegPath.split( '%04d' )[-1]
+				FirstPartName = RenderPath.split( '%04d' )[0]
+				EndPartName = RenderPath.split( '%04d' )[-1]
 				ImageFullName= FirstPartName + '%04d' % i + EndPartName
-				ffmpeg.ffmpegMakingSlates(inputFilePath= ImageFullName,outputFilePath= ImageFullName, topleft = flds['Sequence']+"_"+pbShot+"_v"+str('%03d' % (flds['version'])), topmiddle = Film, topright = str(int(shotStart))+"-"+str('%04d' % i)+"-"+str(int(shotEnd))+"__"+str('%04d' %(i-int(shotStart)))+"-"+str('%04d' %(int(shotEnd)-int(shotStart))), bottomleft = flds['Step'], bottommiddle = USER['name'], bottomright = todaystr , ffmpegPath =r"W:/WG/WTD_Code/trunk/wtd/pipeline/resources/ffmpeg/bin/ffmpeg.exe", font = "/Windows/Fonts/arial.ttf"  )
-				
+				# ffmpeg.ffmpegMakingSlates(inputFilePath= ImageFullName, outputFilePath= ImageFullName, topleft = flds['Sequence']+"_v"+str('%03d' % (flds['version'])), topmiddle = Film, topright = str(CutIn) +"___"+str(int(shotStart))+"-"+str('%04d' % i)+"-"+str(int(shotEnd))+"__"+str('%04d' %(i-int(shotStart)))+"-"+str('%04d' %(int(shotEnd)-int(shotStart))), bottomleft = flds['Step'], bottommiddle = USER['name'], bottomright = todaystr , ffmpegPath =ffmpegPath, font = "arial.ttf"  )
+				ffmpeg.ffmpegMakingSlates(inputFilePath= ImageFullName, outputFilePath= ImageFullName, topleft = flds['Sequence']+"_v"+str('%03d' % (flds['version'])), topmiddle = Film, topright = str(int(CutIn))+"-"+str('%04d' %(i-int(shotStart)+CutIn))+"-"+str('%04d' %(int(shotEnd)-int(shotStart)+CutIn))+"  "+str('%04d' %(i-int(shotStart)))+"-"+str('%04d' %(int(shotEnd)-int(shotStart))), bottomleft = flds['Step'], bottommiddle = USER['name'], bottomright = todaystr , ffmpegPath =ffmpegPath, font = "C:/Windows/Fonts/arial.ttf"  )
+				# ffmpeg.ffmpegMakingSlates(inputFilePath= ImageFullName, outputFilePath= ImageFullName, topleft = flds['Sequence']+"_v"+str('%03d' % (flds['version'])), topmiddle = Film, topright = str(CutIn) +"_"+str(int(CutIn)+('%04d' % i))+"_"+str('%04d' %(int(shotEnd)-int(shotStart)+int(CutIn))) +"_____"+str('%04d' %(i-int(shotStart)))+"-"+str('%04d' %(int(shotEnd)-int(shotStart))), bottomleft = flds['Step'], bottommiddle = USER['name'], bottomright = todaystr , ffmpegPath =ffmpegPath, font = "arial.ttf", logLevel= "debug" )
+			
+			sequenceTest= MakeListOfSequence(os.path.dirname(RenderPath))
+			FistImg= int(FindFirstImageOfSequence(os.path.dirname(RenderPath))) 
+			LastImg= int(FindLastImageOfSequence(os.path.dirname(RenderPath)))
+
+			FramesMissingList= FindMissingFramesFromSequence( sequenceTest , FistImg, LastImg )
+			
+			for n in FramesMissingList:
+				os.system('%s -f lavfi -i color=c=black:s="%s" -vframes 1 "%s"' %(ffmpegPath,(str(flds['width'])+"x"+ str(flds['height'])),FirstPartName+str('%04d' % n)+".png"))
+
+			FirstImageNumber= FindFirstImageOfSequence(os.path.dirname(RenderPath))
+			#SEQUENCE MOV
+			
+			# os.system('%s -start_number "%s" -i "%s" -vcodec libx264  -r 25 "%s" -y' %(ffmpegPath,FirstImageNumber, RenderPath,FirstPartName[:-1]+"_v"+str(flds['version'])+".mov"))
+			os.system('%s -start_number "%s" -i "%s" -vcodec libx264  -r 25 "%s" -y' %(ffmpegPath,FirstImageNumber, RenderPath,FirstPartName[:-1]+"_v"+str('%03d' % (flds['version']))+".mov"))
+
 			# def ffmpegMakingSlates(inputFilePath, outputFilePath, audioPath = "", topleft = "", topmiddle = "", topright = "", bottomleft = "", bottommiddle = "", bottomright = "", ffmpegPath = "ffmpeg.exe", font = "arial.ttf", font_size = 10, font_color = "gray", slate_height = 13, slate_color = "black@0.8", overwrite = True):
 		
 		# if set cam and curve visibility back to original values
@@ -228,7 +315,7 @@ class PublishHook(Hook):
 		cmds.modelEditor(modPan,e=True, cameras=camVis)
 		
 		
-		print "TODO : make mov of whole sequence with audio"
+		# print "TODO : make mov of whole sequence with audio"
 		return results
 
 

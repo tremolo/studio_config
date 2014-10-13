@@ -245,6 +245,7 @@ paths:
     maya_shot_playblast_area: '@shot_render_root/work/maya/v{version}/playblast'
     maya_shot_playblast: '@maya_shot_playblast_area/{width}x{height}/{Shot}[-{name}].{SEQ}.png'
     maya_shot_playblast_mov: '@shot_render_root/review/maya/v{version}/playblast/{width}x{height}/{Shot}[-{name}]_v{version}.mov'
+    maya_shot_playblast_sty_mov: '@shot_render_root/review/maya/v{version}/playblast/{width}x{height}/rts_{Shot}_{Step}_v{version}.mov'
     maya_shot_render: '@shot_render_root/work/images/{name}/v{version}/{width}x{height}/{Shot}_{name}_{channel}_v{version}.{SEQ}.exr'
     maya_shot_render_review_seq: '@shot_render_root/review/images/{name}/v{version}/{width}x{height}/{Shot}_{name}_{channel}_v{version}.{iteration}.{SEQ}.exr'
     maya_shot_render_pub: '@shot_render_root/publish/elements/{name}/v{version}/{width}x{height}/{Shot}_{name}_{channel}_v{version}.{SEQ}.exr'
