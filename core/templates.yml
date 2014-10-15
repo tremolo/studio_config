@@ -172,19 +172,29 @@ paths:
     maya_seq_publish: '@seq_root_step/publish/maya/{Sequence}_{Step}_v{version}.ma'
     maya_seq_mesh_alembic_cache: '@seq_root_Caches/publish/maya/[_{grp_name}]_v{version}.abc'
     maya_seq_mesh_MDD_cache: '@seq_root_Caches/publish/maya/[_{grp_name}]_v{version}.mdd'
-    maya_seq_mesh_PositionsList: '@seq_root_Caches/publish/maya/[_{Sequence}]_v{version}.txt'
+    # maya_seq_mesh_PositionsList: '@seq_root_Caches/publish/maya/[_{Sequence}]_v{version}.txt'
 
     # outputs from the Shotgun Write Node for sequences
-    maya_seq_render_playblast: '@seq_render_root/work/maya/v{version}/{width}x{height}/{Shot}_{Step}[-{name}]_v{version}'
-    maya_seq_playblast_area: '@seq_render_root/work/maya/v{version}/playblast'
-    maya_seq_playblast: '@maya_seq_playblast_area/{width}x{height}/{Shot}_{Step}[-{name}].{SEQ}.png'
-    maya_seq_playblast_mov: '@seq_render_root/review/maya/v{version}/playblast/{width}x{height}/{Sequence}[-{name}]_v{version}.mov'
-    maya_seq_render: '@seq_render_root/work/maya/v{version}/{width}x{height}/{Sequence}_{name}_{channel}_v{version}.{SEQ}.exr'
+    # maya_seq_render_playblast: '@seq_render_root/work/maya/v{version}/{width}x{height}/{Shot}_{Step}[-{name}]_v{version}'
+    maya_seq_playblast_publish_area: '@seq_render_root/publish/maya/v{version}/playblast'
+    maya_seq_playblast_publish: '@maya_seq_playblast_publish_area/{width}x{height}/{Sequence}_{Step}.{SEQ}.png'
+    
+    maya_seq_playblast_work_area: '@seq_render_root/work/maya/v{version}/playblast'
+    maya_seq_playblast_work: '@maya_seq_playblast_work_area/{width}x{height}/{Sequence}[-{name}]_{Step}.{SEQ}.png'
+    
+    maya_seq_playblast_publish_mov: '@seq_render_root/publish/{Sequence}_{Step}_v{version}.mov'
+    maya_seq_playblast_work_mov: '@seq_render_root/work/{Sequence}_{Step}_v{version}.mov'
+    # review output
+    maya_seq_playblast_review_mp4: '@seq_render_root/review/{Sequence}_{Step}_v{version}.mp4'
+    
+    maya_seq_render_work: '@seq_render_root/work/maya/v{version}/{width}x{height}/{Sequence}[-{name}]_{Step}_v{version}.{SEQ}.png'
     ## maya_seq_render_review_seq: '@seq_render_root/review/images/{name}/v{version}/{width}x{height}/{Sequence}_{name}_{channel}_v{version}.{iteration}.{SEQ}.exr'
     ## maya_seq_render_pub: '@seq_render_root/publish/elements/{name}/v{version}/{width}x{height}/{Sequence}_{name}_{channel}_v{version}.{SEQ}.exr'
 
-    # review output
-    maya_seq_render_movie: '@seq_render_root/review/{Sequence}[-{name}][_{channel}]_v{version}.mov'
+
+    maya_seq_render_publish_mov: '@seq_render_root/publish/{Sequence}[-{name}][_{channel}]_v{version}.mov'
+    maya_seq_render_work_mov: '@seq_render_root/work/{Sequence}[-{name}][_{channel}]_v{version}.mov'
+    maya_seq_render_review_mp4: '@seq_render_root/review/{Sequence}[-{name}][_{channel}]_v{version}.mp4'
     ##seq_quicktime_quick:   '@seq_render_root/review/quickdaily/{Sequence}_{name}_{iteration}.mov'
 
     ##########################################################################################
@@ -194,7 +204,8 @@ paths:
     # Data structures
     shot_root_step: '@shot_root/{Step}'
     shot_data_root: '@shot_root/data'
-    shot_positionlist: '@shot_data_root/positionlist/poslist_{Shot}_v{version}.txt'
+    shot_positionlist: '@shot_data_root/positionlist/poslist_{Shot}[_{Step}]_v{version}.txt'
+    shot_audio: '@shot_data_root/audio/{Shot}_v{version}.wav'
     shot_camera_area: '@shot_data_root/camera'
     shot_camera_step: '@shot_camera_area/{Step}'
     shot_camera_maya_publish: '@shot_camera_step/publish/cam_{Shot}_v{version}.ma'
@@ -241,11 +252,13 @@ paths:
     maya_shot_mesh_PositionsList: '@shot_root_Caches/publish/maya/[_{Shot}]_v{version}.txt'
 
     # outputs from the Shotgun Write Node for shots
-    maya_shot_render_playblast: '@shot_render_root/work/maya/v{version}/{width}x{height}/{Shot}[-{name}]_v{version}'
+    # maya_shot_render_playblast: '@shot_render_root/work/maya/v{version}/{width}x{height}/{Shot}[-{name}]_v{version}'
     maya_shot_playblast_area: '@shot_render_root/work/maya/v{version}/playblast'
     maya_shot_playblast: '@maya_shot_playblast_area/{width}x{height}/{Shot}[-{name}].{SEQ}.png'
-    maya_shot_playblast_mov: '@shot_render_root/review/maya/v{version}/playblast/{width}x{height}/{Shot}[-{name}]_v{version}.mov'
-    maya_shot_playblast_sty_mov: '@shot_render_root/review/maya/v{version}/playblast/{width}x{height}/rts_{Shot}_{Step}_v{version}.mov'
+    maya_shot_playblast_mov: '@shot_render_root/publish/maya/v{version}/playblast/{width}x{height}/{Shot}[-{name}]_v{version}.mov'
+    maya_shot_playblast_mp4: '@shot_render_root/review/{Shot}[-{name}]_v{version}.mp4'
+    maya_shot_playblast_sty_mov: '@shot_render_root/publish/maya/v{version}/playblast/{width}x{height}/rts_{Shot}_{Step}_v{version}.mov'
+    
     maya_shot_render: '@shot_render_root/work/images/{name}/v{version}/{width}x{height}/{Shot}_{name}_{channel}_v{version}.{SEQ}.exr'
     maya_shot_render_review_seq: '@shot_render_root/review/images/{name}/v{version}/{width}x{height}/{Shot}_{name}_{channel}_v{version}.{iteration}.{SEQ}.exr'
     maya_shot_render_pub: '@shot_render_root/publish/elements/{name}/v{version}/{width}x{height}/{Shot}_{name}_{channel}_v{version}.{SEQ}.exr'

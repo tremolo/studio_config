@@ -144,6 +144,21 @@ class PublishHook(Hook):
 			MissingFrames =  set(my_list)-set(SequenceSet)
 			return sorted(MissingFrames)
 			
+		def combineAudioFiles(sequence):
+			source = "W:/RTS/Temp/13_ANIMATIC/"+sequence+"/splitshots/wav"
+			output = "W:/RTS/People/xander/test"
+			onlyfiles = listdir(source)
+			audioFilePresent = False
+			file = open(source+'/mylist.txt', 'w')
+			for wav in onlyfiles:
+				if ".wav" in wav:
+					audioFilePresent = True
+					print wav
+					file.write("file 'cd\ " +source+""/+ wav +"'")
+					file.write('\r\n')
+			file.close()
+			if audioFilePresent:
+				os.system('W:/WG/WTD_Code/trunk/wtd/pipeline/resources/ffmpeg/bin/ffmpeg.exe -f concat -i '+source+'/mylist.txt -c copy '+output+'/output.wav')
 
 	
 		wtd_fw = self.load_framework("tk-framework-wtd_v0.x.x")
@@ -160,54 +175,42 @@ class PublishHook(Hook):
 			#print shotCam
 
 		pbShots = []
-		pbOrders = []
 		CutInList = []
-		
-		# SERVER_PATH = 'https://rts.shotgunstudio.com'
-		# SCRIPT_USER = 'AutomateStatus_TD'
-		# SCRIPT_KEY = '8119086c65905c39a5fd8bb2ad872a9887a60bb955550a8d23ca6c01a4d649fb'
-		
-		# sg = sgtk.api.shotgun.Shotgun(SERVER_PATH, SCRIPT_USER, SCRIPT_KEY)	
-		# filters = [ ['project','is', {'type':'Project','id':66}],
-			# ['entity','is',sht],
-			# ['content','is','Board'] ]
-		# taskName = sg.find_one('Task',filters)
+		# these booleans can be used for 
+		noOverscan = False
+		resetCutIn = False
+
+		# template stuff...
+		tk = tank.tank_from_path("W:/RTS/Tank/config")
+		scenePath = cmds.file(q=True,sceneName=True)
+		scene_template = tk.template_from_path(scenePath)
+		flds = scene_template.get_fields(scenePath)
+		flds['width'] = 1724
+		flds['height'] = 936
+		pb_template = tk.templates["maya_seq_playblast_publish"]
 
 		# get extra shot info through shotgun
 		fields = ['id']
-		sequence_id = self.parent.shotgun.find('Sequence',[['code', 'is','q340' ]], fields)[0]['id']
+		sequence_id = self.parent.shotgun.find('Sequence',[['code', 'is',flds['Sequence'] ]], fields)[0]['id']
 		fields = ['id', 'code', 'sg_asset_type','sg_cut_order','sg_cut_in','sg_cut_out']
 		filters = [['sg_sequence', 'is', {'type':'Sequence','id':sequence_id}]]
-		# stepfilters = [['step', 'is', {'type':'Step','id':sequence_id}]]
 		assets= self.parent.shotgun.find("Shot",filters,fields)
-		# StepName = ['step']
 		results = []
-		# publish all tasks:
-		noOverscan = False
-		resetCutIn = False
+
 		for task in tasks:
 			item = task["item"]
 			output = task["output"]
 			errors = []
 			
-			print item
-			
+			#get shots from scan scene
 			if item["type"] == "shot":
 				shotTask = [item["name"]][0]
-				pbOrders += [shotTask]
-				#pbShots += [shotTask]
+				pbShots += [shotTask]
+			# get corresponding cut in values from shotgun
 				for sht in assets:
-					shotOrder = sht['sg_cut_order']
-					print shotOrder
-					print shotTask
-					if ("s"+str(shotOrder)) == shotTask:
-						pbShot = str.split(sht['code'],"_")[1]
-						print(shotTask +"(shot nr) corresponds to order number "+str(pbShot))
-						pbShots += [pbShot]
+					shot_from_shotgun = str.split(sht['code'],"_")[1]
+					if shot_from_shotgun == shotTask:
 						CutInList += [sht['sg_cut_in']]
-					else:
-						# errors.append(str.split(sht['code'],"_")[1]+"   !=    "+shotTask)        
-						pass
 			
 			# set extra settings
 			if item["type"] == "setting":
@@ -221,7 +224,8 @@ class PublishHook(Hook):
 				# add result:
 				results.append({"task":task, "errors":errors})
 			 
-		print("shots to playblast = " + str(pbOrders))
+		print("corresponing Shot numbers = " + str(pbShots))
+		print("cut in list = " + str(CutInList))
 
 		# temporarily hide cams and curves
 		visPan = cmds.getPanel(visiblePanels=True)
@@ -233,43 +237,38 @@ class PublishHook(Hook):
 		camVis = cmds.modelEditor(modPan,q=True, cameras=True)
 		cmds.modelEditor(modPan,e=True, nurbsCurves=False)
 		cmds.modelEditor(modPan,e=True, cameras=False)
+		cmds.modelEditor(modPan,e=True,displayAppearance="smoothShaded")
+		
+		
+		j = 0
+		for pbShot in pbShots:
+			CutIn = CutInList[j]
+			j += 1
 
-		# template stuff...
-		tk = tank.tank_from_path("W:/RTS/Tank/config")   
-
-		scenePath = cmds.file(q=True,sceneName=True)
-		scene_template = tk.template_from_path(scenePath)
-		flds = scene_template.get_fields(scenePath)
-		flds['width'] = 1724
-		flds['height'] = 936
-		pb_template = tk.templates["maya_seq_playblast"]
-
-		i = 0
-		#for pbOrderNr in pbOrderNrs:
-		for pbOrderNr in pbOrders:
-			pbShot = pbShots[i]
-			CutIn = CutInList[i]
-			i += 1
-			#flds['Shot'] = flds['Sequence']+"_"+ pbShot
+			# ... correct this in the templates?
 			flds['Shot'] = flds['Sequence']
-			shotCam = cmds.shot(pbOrderNr, q=True, currentCamera=True)
+
+			#get camera name from sequence shot 
+			shotCam = cmds.shot(pbShot, q=True, currentCamera=True)
+
 			overscanValue = cmds.getAttr(shotCam+".overscan")
 			if noOverscan:
-				#print "KQKQQQAAAAAAAAAAAAAAAAAAA"
 				cmds.setAttr(shotCam+".overscan", 1)
 				print (shotCam+"  overscan is set to 1")
 			
+			# make outputPaths from templates
 			pbPath = pb_template.apply_fields(flds)
+			RenderPath = pbPath
 			pbPath = str.split(str(pbPath),".")[0]
-			RenderPath = pb_template.apply_fields(flds)
+
 			# report progress:
 			progress_cb(0, "Publishing", task)
 
-			shotStart = cmds.shot(pbOrderNr,q=True,sequenceStartTime=True)
-			shotEnd = cmds.shot(pbOrderNr,q=True,sequenceEndTime=True)
-			progress_cb(25, "Making playblast %s" %pbOrderNr)
+			shotStart = cmds.shot(pbShot,q=True,sequenceStartTime=True)
+			shotEnd = cmds.shot(pbShot,q=True,sequenceEndTime=True)
+			progress_cb(25, "Making playblast %s" %pbShot)
 			cmds.playblast(indexFromZero=False,filename=(pbPath),fmt="iff",compression="png",wh=(flds['width'], flds['height']),startTime=shotStart,endTime=shotEnd,sequenceTime=1,forceOverwrite=True, clearCache=1,showOrnaments=0,percent=100,offScreen=True,viewer=False,useTraxSounds=True)
-			progress_cb(50, "Placing Slates %s" %pbOrderNr)
+			progress_cb(50, "Placing Slates %s" %pbShot)
 			
 			cmds.setAttr(shotCam+".overscan", overscanValue)
 			Film = "Richard the Stork"
@@ -290,7 +289,7 @@ class PublishHook(Hook):
 				EndPartName = RenderPath.split( '%04d' )[-1]
 				ImageFullName= FirstPartName + '%04d' % i + EndPartName
 				# ffmpeg.ffmpegMakingSlates(inputFilePath= ImageFullName, outputFilePath= ImageFullName, topleft = flds['Sequence']+"_v"+str('%03d' % (flds['version'])), topmiddle = Film, topright = str(CutIn) +"___"+str(int(shotStart))+"-"+str('%04d' % i)+"-"+str(int(shotEnd))+"__"+str('%04d' %(i-int(shotStart)))+"-"+str('%04d' %(int(shotEnd)-int(shotStart))), bottomleft = flds['Step'], bottommiddle = USER['name'], bottomright = todaystr , ffmpegPath =ffmpegPath, font = "arial.ttf"  )
-				ffmpeg.ffmpegMakingSlates(inputFilePath= ImageFullName, outputFilePath= ImageFullName, topleft = flds['Sequence']+"_v"+str('%03d' % (flds['version'])), topmiddle = Film, topright = str(int(CutIn))+"-"+str('%04d' %(i-int(shotStart)+CutIn))+"-"+str('%04d' %(int(shotEnd)-int(shotStart)+CutIn))+"  "+str('%04d' %(i-int(shotStart)))+"-"+str('%04d' %(int(shotEnd)-int(shotStart))), bottomleft = flds['Step'], bottommiddle = USER['name'], bottomright = todaystr , ffmpegPath =ffmpegPath, font = "C:/Windows/Fonts/arial.ttf"  )
+				ffmpeg.ffmpegMakingSlates(inputFilePath= ImageFullName, outputFilePath= ImageFullName, topleft = flds ['Sequence']+"_"+flds['Step']+"_v"+str('%03d' % (flds['version'])), topmiddle = Film, topright = str(int(CutIn))+"-"+str('%04d' %(i-int(shotStart)+CutIn))+"-"+str('%04d' %(int(shotEnd)-int(shotStart)+CutIn))+"  "+str('%04d' %(i-int(shotStart)))+"-"+str('%04d' %(int(shotEnd)-int(shotStart))), bottomleft = flds['Step'], bottommiddle = USER['name'], bottomright = todaystr , ffmpegPath =ffmpegPath, font = "C:/Windows/Fonts/arial.ttf"  )
 				# ffmpeg.ffmpegMakingSlates(inputFilePath= ImageFullName, outputFilePath= ImageFullName, topleft = flds['Sequence']+"_v"+str('%03d' % (flds['version'])), topmiddle = Film, topright = str(CutIn) +"_"+str(int(CutIn)+('%04d' % i))+"_"+str('%04d' %(int(shotEnd)-int(shotStart)+int(CutIn))) +"_____"+str('%04d' %(i-int(shotStart)))+"-"+str('%04d' %(int(shotEnd)-int(shotStart))), bottomleft = flds['Step'], bottommiddle = USER['name'], bottomright = todaystr , ffmpegPath =ffmpegPath, font = "arial.ttf", logLevel= "debug" )
 			
 			sequenceTest= MakeListOfSequence(os.path.dirname(RenderPath))
@@ -303,10 +302,27 @@ class PublishHook(Hook):
 				os.system('%s -f lavfi -i color=c=black:s="%s" -vframes 1 "%s"' %(ffmpegPath,(str(flds['width'])+"x"+ str(flds['height'])),FirstPartName+str('%04d' % n)+".png"))
 
 			FirstImageNumber= FindFirstImageOfSequence(os.path.dirname(RenderPath))
-			#SEQUENCE MOV
+			FirstImageNumberSecond= FirstImageNumber/24
 			
 			# os.system('%s -start_number "%s" -i "%s" -vcodec libx264  -r 25 "%s" -y' %(ffmpegPath,FirstImageNumber, RenderPath,FirstPartName[:-1]+"_v"+str(flds['version'])+".mov"))
-			os.system('%s -start_number "%s" -i "%s" -vcodec libx264  -r 25 "%s" -y' %(ffmpegPath,FirstImageNumber, RenderPath,FirstPartName[:-1]+"_v"+str('%03d' % (flds['version']))+".mov"))
+			
+			maya_seq_playblast_publish_mov_template = tk.templates["maya_seq_playblast_publish_mov"]
+			maya_seq_pbst_pbsh_mov_path = maya_seq_playblast_publish_mov_template.apply_fields(flds)
+
+			maya_seq_playblast_review_mp4_template = tk.templates["maya_seq_playblast_review_mp4"]
+			maya_seq_pbst_rev_mp4_path = maya_seq_playblast_review_mp4_template.apply_fields(flds)
+			
+			if not os.path.exists(os.path.dirname(maya_seq_pbst_pbsh_mov_path)):
+				os.makedirs(os.path.dirname(maya_seq_pbst_pbsh_mov_path))
+				
+			if not os.path.exists(os.path.dirname(maya_seq_pbst_rev_mp4_path)):
+				os.makedirs(os.path.dirname(maya_seq_pbst_rev_mp4_path))
+
+			#SEQUENCE MOV
+			# OutMov = FirstPartName[:-1]+"_v"+str('%03d' % (flds['version']))+".mov"
+
+			os.system('%s -start_number "%s" -i "%s" -vcodec libx264  -r 25 "%s" -y' %(ffmpegPath,FirstImageNumber,RenderPath, maya_seq_pbst_pbsh_mov_path ))
+			os.system('%s -start_number "%s" -i "%s" -vcodec libx264  -r 25 "%s" -y' %(ffmpegPath,FirstImageNumber,RenderPath, maya_seq_pbst_rev_mp4_path ))
 
 			# def ffmpegMakingSlates(inputFilePath, outputFilePath, audioPath = "", topleft = "", topmiddle = "", topright = "", bottomleft = "", bottommiddle = "", bottomright = "", ffmpegPath = "ffmpeg.exe", font = "arial.ttf", font_size = 10, font_color = "gray", slate_height = 13, slate_color = "black@0.8", overwrite = True):
 		
@@ -314,15 +330,27 @@ class PublishHook(Hook):
 		cmds.modelEditor(modPan,e=True, nurbsCurves=crvVis)
 		cmds.modelEditor(modPan,e=True, cameras=camVis)
 		
+		# ----------------------------------------------
+		# UPLOAD QUICKTIME
+		# ----------------------------------------------	
+			
+		SERVER_PATH = 'https://rts.shotgunstudio.com'
+		SCRIPT_USER = 'AutomateStatus_TD'
+		SCRIPT_KEY = '8119086c65905c39a5fd8bb2ad872a9887a60bb955550a8d23ca6c01a4d649fb'
+
+		sg = sgtk.api.shotgun.Shotgun(SERVER_PATH, SCRIPT_USER, SCRIPT_KEY)
+
+		data = {'project': {'type':'Project','id':66},
+				'entity': {'type':'Sequence', 'id':int(sequence_id)},
+				'code': flds ['Sequence']+"_"+flds['Step']+"_v"+str('%03d' % (flds['version'])),
+				'sg_path_to_frames':os.path.dirname(RenderPath),
+				'sg_path_to_movie':maya_seq_pbst_pbsh_mov_path
+				}
+
+		result = sg.create('Version', data)
+		executed = sg.upload("Version",result['id'],maya_seq_pbst_rev_mp4_path,'sg_uploaded_movie')
+		print executed
 		
 		# print "TODO : make mov of whole sequence with audio"
 		return results
-
-
-
-
-		
-
-
-
 

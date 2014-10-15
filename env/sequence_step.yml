@@ -195,11 +195,11 @@ engines:
         primary_tank_type: Maya Scene
         secondary_outputs:
         - {description: extra playblast settings, display_group: Playblast settings, display_name: Playblast settings
-           , icon: icons/maya_cam.png, name: playblast settings, publish_template: maya_seq_playblast,
+           , icon: icons/maya_cam.png, name: playblast settings, publish_template: maya_seq_playblast_publish,
           required: false, scene_item_type: setting, selected: true, tank_type: Alembic
             Cache}
         - {description: shots in scene, display_group: Playblast shots, display_name: Shots
-           , icon: icons/maya_cam.png, name: playblast shots, publish_template: maya_seq_playblast,
+           , icon: icons/maya_cam.png, name: playblast shots, publish_template: maya_seq_playblast_publish,
           required: false, scene_item_type: shot, selected: true, tank_type: Alembic
             Cache}
         template_work: maya_seq_work
