@@ -251,21 +251,25 @@ class PublishHook(Hook):
 		
 		# audio stuff
 		stepVersion = flds['version']
-		audioList = []
-		for sht in shots:
-			flds['Shot'] = (flds['Sequence']+"_"+sht)
-			flds['version'] = 1 #temporary set version to 1 for soundfiles ...
-			audioList += [audio_template.apply_fields(flds)]
-		flds['Shot'] = flds['Sequence']
-		audioOutput = pbArea_template.apply_fields(flds)+"/"+flds['Sequence']+"_"+flds['Step']+".wav"
-		combineAudioFiles(audioList,audioOutput)
+		# audioList = []
+		# for sht in shots:
+			# flds['Shot'] = (flds['Sequence']+"_"+sht)
+			# flds['version'] = 1 #temporary set version to 1 for soundfiles ...
+			# audioList += [audio_template.apply_fields(flds)]
+		# flds['Shot'] = flds['Sequence']
+		# audioOutput = pbArea_template.apply_fields(flds)+"/"+flds['Sequence']+"_"+flds['Step']+".wav"
+		# combineAudioFiles(audioList,audioOutput)
 		flds['version'] = stepVersion #set version back
 
 		j = 0
+		RenderPath = ""
 		for pbShot in pbShots:
 			CutIn = CutInList[j]
 			j += 1
-
+			
+			sequenceName = flds ['Sequence']
+			shotName = pbShot
+			
 			# ... correct this in the templates?
 			flds['Shot'] = flds['Sequence']
 
@@ -288,7 +292,7 @@ class PublishHook(Hook):
 			shotStart = cmds.shot(pbShot,q=True,sequenceStartTime=True)
 			shotEnd = cmds.shot(pbShot,q=True,sequenceEndTime=True)
 			progress_cb(25, "Making playblast %s" %pbShot)
-			cmds.playblast(indexFromZero=False,filename=(pbPath),fmt="iff",compression="png",wh=(flds['width'], flds['height']),startTime=shotStart,endTime=shotEnd,sequenceTime=1,forceOverwrite=True, clearCache=1,showOrnaments=0,percent=100,offScreen=True,viewer=False,useTraxSounds=True)
+			# cmds.playblast(indexFromZero=False,filename=(pbPath),fmt="iff",compression="png",wh=(flds['width'], flds['height']),startTime=shotStart,endTime=shotEnd,sequenceTime=1,forceOverwrite=True, clearCache=1,showOrnaments=0,percent=100,offScreen=True,viewer=False,useTraxSounds=True)
 			progress_cb(50, "Placing Slates %s" %pbShot)
 			
 			cmds.setAttr(shotCam+".overscan", overscanValue)
@@ -302,8 +306,8 @@ class PublishHook(Hook):
 			# os.getenv('KEY_THAT_MIGHT_EXIST', default_value)
 			
 			# ffmpegPath =os.environ.get('FFMPEG_PATH')
-			ffmpegPath =r'"C:\Program Files\ffmpeg\bin\ffmpeg"'
 			ffmpegPath =r"%FFMPEG_PATH%\ffmpeg"
+			ffmpegPath =r'"C:\Program Files\ffmpeg\bin\ffmpeg"'
 			
 			"""
 				Adding Slates to playblast files
@@ -312,7 +316,7 @@ class PublishHook(Hook):
 				FirstPartName = RenderPath.split( '%04d' )[0]
 				EndPartName = RenderPath.split( '%04d' )[-1]
 				ImageFullName= FirstPartName + '%04d' % i + EndPartName
-				ffmpeg.ffmpegMakingSlates(inputFilePath= ImageFullName, outputFilePath= ImageFullName, topleft = flds ['Sequence']+"_"+flds['Step']+"_v"+str('%03d' % (flds['version'])), topmiddle = Film, topright = str(int(CutIn))+"-"+str('%04d' %(i-int(shotStart)+CutIn))+"-"+str('%04d' %(int(shotEnd)-int(shotStart)+CutIn))+"  "+str('%04d' %(i-int(shotStart)))+"-"+str('%04d' %(int(shotEnd)-int(shotStart))), bottomleft = flds['Step'], bottommiddle = USER['name'], bottomright = todaystr , ffmpegPath =ffmpegPath, font = "C:/Windows/Fonts/arial.ttf"  )
+				ffmpeg.ffmpegMakingSlates(inputFilePath= ImageFullName, outputFilePath= ImageFullName, topleft = flds ['Sequence']+"_"+flds['Step']+"_v"+str('%03d' % (flds['version'])), topmiddle = Film, topright = str(int(CutIn))+"-"+str('%04d' %(i-int(shotStart)+CutIn))+"-"+str('%04d' %(int(shotEnd)-int(shotStart)+CutIn))+"  "+str('%04d' %(i-int(shotStart)))+"-"+str('%04d' %(int(shotEnd)-int(shotStart))), bottomleft = shotName, bottommiddle = USER['name'], bottomright = todaystr , ffmpegPath =ffmpegPath, font = "C:/Windows/Fonts/arial.ttf"  )
 			
 		sequenceTest= MakeListOfSequence(os.path.dirname(RenderPath))
 		FistImg= int(FindFirstImageOfSequence(os.path.dirname(RenderPath))) 
