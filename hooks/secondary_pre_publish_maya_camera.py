@@ -99,6 +99,8 @@ class PrePublishHook(Hook):
                 shotTask = [item["name"]][0]
                 pbShots += [shotTask]
 
+            #errors += ["temp_stop"]
+
             print "-------" 
             print output["publish_template"]
             print "-------"
