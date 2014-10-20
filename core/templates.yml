@@ -206,6 +206,8 @@ paths:
     shot_data_root: '@shot_root/data'
     shot_positionlist: '@shot_data_root/positionlist/poslist_{Shot}[_{Step}]_v{version}.txt'
     shot_audio: '@shot_data_root/audio/{Shot}_v{version}.wav'
+    shot_published_audio: '@shot_root/snd/publish/{Shot}_v{version}.wav'
+    shot_work_audio: '@shot_root/snd/work/{Shot}_v{version}.wav'
     shot_camera_area: '@shot_data_root/camera'
     shot_camera_step: '@shot_camera_area/{Step}'
     shot_camera_maya_publish: '@shot_camera_step/publish/cam_{Shot}_v{version}.ma'

@@ -149,24 +149,30 @@ class PublishHook(Hook):
 			
 		def combineAudioFiles(fileList,output):
 			#fileList = str.replace(fileList,"\\","/")
-			rootPath = str.split(str(fileList)[0],"\\q")[0]
+			rootPath = str.split(str(fileList[0]),"/q")[0]
 			print rootPath
 			audioFilePresent = False
-			audioFile = open(rootPath+'tmpAudioList.txt', 'w')
+			audioFile = open(rootPath+'/tmpAudioList.txt', 'w')
 			for wav in fileList:
 				if os.path.exists(wav):
 					audioFilePresent = True
 					print wav
-					shotPath = str.split(str(wav),"Sequences")[1]
-					audioFile.write("file '" +shotPath)
+					shotPath = str.split(str(wav),"Sequences")[1][1:]
+					audioFile.write("file '" +shotPath+"'")
 					audioFile.write('\r\n')
 				else:
 					print("AUDIO FILE NOT FOUND :  " + str(wav))
 					results.append({"task":"audio stuff", "errors":("AUDIO FILE NOT FOUND :  " + str(wav))})
 			audioFile.close()
 			if audioFilePresent:
-				value = subprocess.call('W:/WG/WTD_Code/trunk/wtd/pipeline/resources/ffmpeg/bin/ffmpeg.exe -f concat -i '+rootPath+'tmpAudioList.txt -c copy '+output)
+				command = os.path.normpath('W:/WG/WTD_Code/trunk/wtd/pipeline/resources/ffmpeg/bin/ffmpeg.exe -f concat -i '+rootPath+'/tmpAudioList.txt -c copy '+output)
+				command = str.replace(str(command), "\\" , "/")
+				print command
+				value = subprocess.call(command)
 				print value
+				return output
+			else:
+				return None
 
 	
 		wtd_fw = self.load_framework("tk-framework-wtd_v0.x.x")
@@ -197,7 +203,7 @@ class PublishHook(Hook):
 		flds['height'] = 936
 		pb_template = tk.templates["maya_seq_playblast_publish"]
 		pbArea_template = tk.templates["maya_seq_playblast_publish_area"]
-		audio_template = tk.templates["shot_audio"]
+		audio_template = tk.templates["shot_published_audio"]
 
 		# get extra shot info through shotgun
 		fields = ['id']
@@ -251,147 +257,154 @@ class PublishHook(Hook):
 		
 		# audio stuff
 		stepVersion = flds['version']
-		# audioList = []
-		# for sht in shots:
-			# flds['Shot'] = (flds['Sequence']+"_"+sht)
-			# flds['version'] = 1 #temporary set version to 1 for soundfiles ...
-			# audioList += [audio_template.apply_fields(flds)]
-		# flds['Shot'] = flds['Sequence']
-		# audioOutput = pbArea_template.apply_fields(flds)+"/"+flds['Sequence']+"_"+flds['Step']+".wav"
-		# combineAudioFiles(audioList,audioOutput)
+		audioList = []
+		for sht in shots:
+			print sht
+			flds['Shot'] = (flds['Sequence']+"_"+sht)
+			#flds['version'] = 1 #temporary set version to 1 for soundfiles ...
+			audioList += [str.replace(str(audio_template.apply_fields(flds)),"\\","/")]
+		flds['Shot'] = flds['Sequence']
 		flds['version'] = stepVersion #set version back
 
-		j = 0
-		RenderPath = ""
-		for pbShot in pbShots:
-			CutIn = CutInList[j]
-			j += 1
-			
-			sequenceName = flds ['Sequence']
-			shotName = pbShot
-			
-			# ... correct this in the templates?
-			flds['Shot'] = flds['Sequence']
+		audioOutput = pbArea_template.apply_fields(flds)+"/"+flds['Sequence']+"_"+flds['Step']+".wav"
+		combinedAudio = combineAudioFiles(audioList,audioOutput)
+		print ("combined audio at  " + audioOutput)
+		
 
-			#get camera name from sequence shot 
-			shotCam = cmds.shot(pbShot, q=True, currentCamera=True)
+		Test = True;
+		#Test = False;
+		if Test:
+			j = 0
+			RenderPath = ""
+			for pbShot in pbShots:
+				CutIn = CutInList[j]
+				j += 1
+				
+				sequenceName = flds ['Sequence']
+				shotName = pbShot
+				
+				# ... correct this in the templates?
+				flds['Shot'] = flds['Sequence']
 
-			overscanValue = cmds.getAttr(shotCam+".overscan")
-			if noOverscan:
-				cmds.setAttr(shotCam+".overscan", 1)
-				print (shotCam+"  overscan is set to 1")
-			
-			# make outputPaths from templates
-			pbPath = pb_template.apply_fields(flds)
-			RenderPath = pbPath
-			pbPath = str.split(str(pbPath),".")[0]
+				#get camera name from sequence shot 
+				shotCam = cmds.shot(pbShot, q=True, currentCamera=True)
 
-			# report progress:
-			progress_cb(0, "Publishing", task)
+				# overscanValue = cmds.getAttr(shotCam+".overscan")
+				
+				cmds.setAttr(shotCam+".overscan", 1.3)
+				if noOverscan:
+					cmds.setAttr(shotCam+".overscan", 1)
+				
+				# make outputPaths from templates
+				pbPath = pb_template.apply_fields(flds)
+				RenderPath = pbPath
+				pbPath = str.split(str(pbPath),".")[0]
 
-			shotStart = cmds.shot(pbShot,q=True,sequenceStartTime=True)
-			shotEnd = cmds.shot(pbShot,q=True,sequenceEndTime=True)
-			progress_cb(25, "Making playblast %s" %pbShot)
-			# cmds.playblast(indexFromZero=False,filename=(pbPath),fmt="iff",compression="png",wh=(flds['width'], flds['height']),startTime=shotStart,endTime=shotEnd,sequenceTime=1,forceOverwrite=True, clearCache=1,showOrnaments=0,percent=100,offScreen=True,viewer=False,useTraxSounds=True)
-			progress_cb(50, "Placing Slates %s" %pbShot)
+				# report progress:
+				progress_cb(0, "Publishing", task)
+
+				shotStart = cmds.shot(pbShot,q=True,sequenceStartTime=True)
+				shotEnd = cmds.shot(pbShot,q=True,sequenceEndTime=True)
+				progress_cb(25, "Making playblast %s" %pbShot)
+				cmds.playblast(indexFromZero=False,filename=(pbPath),fmt="iff",compression="png",wh=(flds['width'], flds['height']),startTime=shotStart,endTime=shotEnd,sequenceTime=1,forceOverwrite=True, clearCache=1,showOrnaments=1,percent=100,offScreen=True,viewer=False,useTraxSounds=True)
+				progress_cb(50, "Placing Slates %s" %pbShot)
+				
+				Film = "Richard the Stork"
+				#GET CURRENT DATE
+				today = datetime.date.today()
+				todaystr = today.isoformat()
+				#Get USER
+				USER = sgtk.util.get_current_user(tk)
+				# os.environ.get('FFMPEG_PATH')
+				# os.getenv('KEY_THAT_MIGHT_EXIST', default_value)
+				
+				# ffmpegPath =os.environ.get('FFMPEG_PATH')
+				ffmpegPath =r"%FFMPEG_PATH%\ffmpeg"
+				ffmpegPath =r'"C:\Program Files\ffmpeg\bin\ffmpeg"'
+				
+				"""
+					Adding Slates to playblast files
+				"""
+				for i in range(int(shotStart),int(shotEnd)+1):
+					FirstPartName = RenderPath.split( '%04d' )[0]
+					EndPartName = RenderPath.split( '%04d' )[-1]
+					ImageFullName= FirstPartName + '%04d' % i + EndPartName
+					ffmpeg.ffmpegMakingSlates(inputFilePath= ImageFullName, outputFilePath= ImageFullName, topleft = flds ['Sequence']+"_"+flds['Step']+"_v"+str('%03d' % (flds['version'])), topmiddle = Film, topright = str(int(CutIn))+"-"+str('%04d' %(i-int(shotStart)+CutIn))+"-"+str('%04d' %(int(shotEnd)-int(shotStart)+CutIn))+"  "+str('%04d' %(i-int(shotStart)))+"-"+str('%04d' %(int(shotEnd)-int(shotStart))), bottomleft = shotName, bottommiddle = USER['name'], bottomright = todaystr , ffmpegPath =ffmpegPath, font = "C:/Windows/Fonts/arial.ttf"  )
+				
+			sequenceTest= MakeListOfSequence(os.path.dirname(RenderPath))
+			FistImg= int(FindFirstImageOfSequence(os.path.dirname(RenderPath))) 
+			LastImg= int(FindLastImageOfSequence(os.path.dirname(RenderPath)))
+
+			FramesMissingList= FindMissingFramesFromSequence( sequenceTest , FistImg, LastImg )
 			
-			cmds.setAttr(shotCam+".overscan", overscanValue)
-			Film = "Richard the Stork"
-			#GET CURRENT DATE
-			today = datetime.date.today()
-			todaystr = today.isoformat()
-			#Get USER
-			USER = sgtk.util.get_current_user(tk)
-			# os.environ.get('FFMPEG_PATH')
-			# os.getenv('KEY_THAT_MIGHT_EXIST', default_value)
-			
-			# ffmpegPath =os.environ.get('FFMPEG_PATH')
-			ffmpegPath =r"%FFMPEG_PATH%\ffmpeg"
-			ffmpegPath =r'"C:\Program Files\ffmpeg\bin\ffmpeg"'
+			# for n in FramesMissingList:
+				# os.system('%s -f lavfi -i color=c=black:s="%s" -vframes 1 "%s"' %(ffmpegPath,(str(flds['width'])+"x"+ str(flds['height'])),FirstPartName+str('%04d' % n)+".png"))
 			
 			"""
-				Adding Slates to playblast files
+				Copy empty frames
 			"""
-			for i in range(int(shotStart),int(shotEnd)+1):
-				FirstPartName = RenderPath.split( '%04d' )[0]
-				EndPartName = RenderPath.split( '%04d' )[-1]
-				ImageFullName= FirstPartName + '%04d' % i + EndPartName
-				ffmpeg.ffmpegMakingSlates(inputFilePath= ImageFullName, outputFilePath= ImageFullName, topleft = flds ['Sequence']+"_"+flds['Step']+"_v"+str('%03d' % (flds['version'])), topmiddle = Film, topright = str(int(CutIn))+"-"+str('%04d' %(i-int(shotStart)+CutIn))+"-"+str('%04d' %(int(shotEnd)-int(shotStart)+CutIn))+"  "+str('%04d' %(i-int(shotStart)))+"-"+str('%04d' %(int(shotEnd)-int(shotStart))), bottomleft = shotName, bottommiddle = USER['name'], bottomright = todaystr , ffmpegPath =ffmpegPath, font = "C:/Windows/Fonts/arial.ttf"  )
+			blackFrame = False
+			blackFrameName = ""
+			for n in FramesMissingList:
+				if blackFrame == False:
+					blackFrameName = FirstPartName+str('%04d' % n)+".png"
+					value = subprocess.call('%s -f lavfi -i color=c=black:s="%s" -vframes 1 "%s"' %(ffmpegPath,(str(flds['width'])+"x"+ str(flds['height'])),FirstPartName+str('%04d' % n)+".png"))
+					print '%s -f lavfi -i color=c=black:s="%s" -vframes 1 "%s"' %(ffmpegPath,(str(flds['width'])+"x"+ str(flds['height'])),FirstPartName+str('%04d' % n)+".png")
+					blackFrame = True
+				
+				newFrameName = FirstPartName+str('%04d' % n)+".png"
+				if blackFrameName != newFrameName:
+					shutil.copy2(blackFrameName, newFrameName)	
+
+			FirstImageNumber= FindFirstImageOfSequence(os.path.dirname(RenderPath))
+			FirstImageNumberSecond= FirstImageNumber/24
 			
-		sequenceTest= MakeListOfSequence(os.path.dirname(RenderPath))
-		FistImg= int(FindFirstImageOfSequence(os.path.dirname(RenderPath))) 
-		LastImg= int(FindLastImageOfSequence(os.path.dirname(RenderPath)))
+			maya_seq_playblast_publish_mov_template = tk.templates["maya_seq_playblast_publish_mov"]
+			maya_seq_pbst_pbsh_mov_path = maya_seq_playblast_publish_mov_template.apply_fields(flds)
 
-		FramesMissingList= FindMissingFramesFromSequence( sequenceTest , FistImg, LastImg )
-		
-		# for n in FramesMissingList:
-			# os.system('%s -f lavfi -i color=c=black:s="%s" -vframes 1 "%s"' %(ffmpegPath,(str(flds['width'])+"x"+ str(flds['height'])),FirstPartName+str('%04d' % n)+".png"))
-		
-		"""
-			Copy empty frames
-		"""
-		blackFrame = False
-		blackFrameName = ""
-		for n in FramesMissingList:
-			if blackFrame == False:
-				blackFrameName = FirstPartName+str('%04d' % n)+".png"
-				value = subprocess.call('%s -f lavfi -i color=c=black:s="%s" -vframes 1 "%s"' %(ffmpegPath,(str(flds['width'])+"x"+ str(flds['height'])),FirstPartName+str('%04d' % n)+".png"))
-				print '%s -f lavfi -i color=c=black:s="%s" -vframes 1 "%s"' %(ffmpegPath,(str(flds['width'])+"x"+ str(flds['height'])),FirstPartName+str('%04d' % n)+".png")
-				blackFrame = True
+			maya_seq_playblast_review_mp4_template = tk.templates["maya_seq_playblast_review_mp4"]
+			maya_seq_pbst_rev_mp4_path = maya_seq_playblast_review_mp4_template.apply_fields(flds)
 			
-			newFrameName = FirstPartName+str('%04d' % n)+".png"
-			if blackFrameName != newFrameName:
-				shutil.copy2(blackFrameName, newFrameName)	
-
-		FirstImageNumber= FindFirstImageOfSequence(os.path.dirname(RenderPath))
-		FirstImageNumberSecond= FirstImageNumber/24
-		
-		maya_seq_playblast_publish_mov_template = tk.templates["maya_seq_playblast_publish_mov"]
-		maya_seq_pbst_pbsh_mov_path = maya_seq_playblast_publish_mov_template.apply_fields(flds)
-
-		maya_seq_playblast_review_mp4_template = tk.templates["maya_seq_playblast_review_mp4"]
-		maya_seq_pbst_rev_mp4_path = maya_seq_playblast_review_mp4_template.apply_fields(flds)
-		
-		if not os.path.exists(os.path.dirname(maya_seq_pbst_pbsh_mov_path)):
-			os.makedirs(os.path.dirname(maya_seq_pbst_pbsh_mov_path))
-		
-		if not os.path.exists(os.path.dirname(maya_seq_pbst_rev_mp4_path)):
-			os.makedirs(os.path.dirname(maya_seq_pbst_rev_mp4_path))
-		"""
-			SEQUENCE MOV and MP4 Creation
-		"""
-		# os.system('%s -start_number "%s" -i "%s" -vcodec libx264  -r 25 "%s" -y' %(ffmpegPath,FirstImageNumber,RenderPath, maya_seq_pbst_pbsh_mov_path ))
-		# os.system('%s -start_number "%s" -i "%s" -vcodec libx264  -r 25 "%s" -y' %(ffmpegPath,FirstImageNumber,RenderPath, maya_seq_pbst_rev_mp4_path ))
-		print "Making mov and mp4: \n", maya_seq_pbst_pbsh_mov_path, ' --- ', maya_seq_pbst_rev_mp4_path
-		print ffmpeg.ffmpegMakingMovie(inputFilePath=RenderPath, outputFilePath=maya_seq_pbst_pbsh_mov_path, audioPath="", start_frame=FirstImageNumber, framerate=24 , encodeOptions='libx264',ffmpegPath=ffmpegPath)
-		print ffmpeg.ffmpegMakingMovie(inputFilePath=RenderPath, outputFilePath=maya_seq_pbst_rev_mp4_path, audioPath="", start_frame=FirstImageNumber, framerate=24 , encodeOptions='libx264',ffmpegPath=ffmpegPath)
-
-		
-		# if set cam and curve visibility back to original values
-		cmds.modelEditor(modPan,e=True, nurbsCurves=crvVis)
-		cmds.modelEditor(modPan,e=True, cameras=camVis)
-		
-		# ----------------------------------------------
-		# UPLOAD QUICKTIME
-		# ----------------------------------------------	
+			if not os.path.exists(os.path.dirname(maya_seq_pbst_pbsh_mov_path)):
+				os.makedirs(os.path.dirname(maya_seq_pbst_pbsh_mov_path))
 			
-		SERVER_PATH = 'https://rts.shotgunstudio.com'
-		SCRIPT_USER = 'AutomateStatus_TD'
-		SCRIPT_KEY = '8119086c65905c39a5fd8bb2ad872a9887a60bb955550a8d23ca6c01a4d649fb'
+			if not os.path.exists(os.path.dirname(maya_seq_pbst_rev_mp4_path)):
+				os.makedirs(os.path.dirname(maya_seq_pbst_rev_mp4_path))
+			"""
+				SEQUENCE MOV and MP4 Creation
+			"""
+			# os.system('%s -start_number "%s" -i "%s" -vcodec libx264  -r 25 "%s" -y' %(ffmpegPath,FirstImageNumber,RenderPath, maya_seq_pbst_pbsh_mov_path ))
+			# os.system('%s -start_number "%s" -i "%s" -vcodec libx264  -r 25 "%s" -y' %(ffmpegPath,FirstImageNumber,RenderPath, maya_seq_pbst_rev_mp4_path ))
+			print "Making mov and mp4: \n", maya_seq_pbst_pbsh_mov_path, ' --- ', maya_seq_pbst_rev_mp4_path
+			print ffmpeg.ffmpegMakingMovie(inputFilePath=RenderPath, outputFilePath=maya_seq_pbst_pbsh_mov_path, audioPath=combinedAudio, start_frame=FirstImageNumber, framerate=24 , encodeOptions='libx264',ffmpegPath=ffmpegPath)
+			print ffmpeg.ffmpegMakingMovie(inputFilePath=RenderPath, outputFilePath=maya_seq_pbst_rev_mp4_path, audioPath=combinedAudio, start_frame=FirstImageNumber, framerate=24 , encodeOptions='libx264',ffmpegPath=ffmpegPath)
 
-		sg = sgtk.api.shotgun.Shotgun(SERVER_PATH, SCRIPT_USER, SCRIPT_KEY)
+			
+			# if set cam and curve visibility back to original values
+			cmds.modelEditor(modPan,e=True, nurbsCurves=crvVis)
+			cmds.modelEditor(modPan,e=True, cameras=camVis)
+			
+			# ----------------------------------------------
+			# UPLOAD QUICKTIME
+			# ----------------------------------------------	
+				
+			SERVER_PATH = 'https://rts.shotgunstudio.com'
+			SCRIPT_USER = 'AutomateStatus_TD'
+			SCRIPT_KEY = '8119086c65905c39a5fd8bb2ad872a9887a60bb955550a8d23ca6c01a4d649fb'
 
-		data = {'project': {'type':'Project','id':66},
-				'entity': {'type':'Sequence', 'id':int(sequence_id)},
-				'code': flds ['Sequence']+"_"+flds['Step']+"_v"+str('%03d' % (flds['version'])),
-				'sg_path_to_frames':os.path.dirname(RenderPath),
-				'sg_path_to_movie':maya_seq_pbst_pbsh_mov_path
-				}
+			sg = sgtk.api.shotgun.Shotgun(SERVER_PATH, SCRIPT_USER, SCRIPT_KEY)
 
-		result = sg.create('Version', data)
-		executed = sg.upload("Version",result['id'],maya_seq_pbst_rev_mp4_path,'sg_uploaded_movie')
-		print executed
-		
-		# print "TODO : make mov of whole sequence with audio"
-		return results
+			data = {'project': {'type':'Project','id':66},
+					'entity': {'type':'Sequence', 'id':int(sequence_id)},
+					'code': flds ['Sequence']+"_"+flds['Step']+"_v"+str('%03d' % (flds['version'])),
+					'sg_path_to_frames':os.path.dirname(RenderPath),
+					'sg_path_to_movie':maya_seq_pbst_pbsh_mov_path
+					}
+
+			result = sg.create('Version', data)
+			executed = sg.upload("Version",result['id'],maya_seq_pbst_rev_mp4_path,'sg_uploaded_movie')
+			print executed
+			
+			# print "TODO : make mov of whole sequence with audio"
+			return results
 
