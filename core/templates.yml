@@ -37,6 +37,8 @@ keys:
         type: str
     Asset:
         type: str
+    Resolution:
+        type: str
     name:
         type: str
         filter_by: alphanumeric
@@ -176,14 +178,18 @@ paths:
 
     # outputs from the Shotgun Write Node for sequences
     # maya_seq_render_playblast: '@seq_render_root/work/maya/v{version}/{width}x{height}/{Shot}_{Step}[-{name}]_v{version}'
-    maya_seq_playblast_publish_area: '@seq_render_root/publish/maya/v{version}/playblast'
-    maya_seq_playblast_publish: '@maya_seq_playblast_publish_area/{width}x{height}/{Sequence}_{Step}.{SEQ}.png'
+    maya_seq_playblast_publish_area: '@seq_render_root/publish/v{version}/playblast'
+    maya_seq_playblast_publish: '@maya_seq_playblast_publish_area/{width}x{height}/{Sequence}_{Step}_v{version}.{SEQ}.png'
+    maya_seq_playblast_current: '@seq_render_root/publish/_current/playblast/{width}x{height}/{Sequence}_{Step}.{SEQ}.png'
     
+    maya_seq_playblast_publish_currentshots_mov: '@seq_render_root/publish/_current/mov/{Shot}.mov'
+    maya_seq_playblast_publish_versionlist: '@seq_render_root/publish/_current/versions.txt'
+    maya_seq_playblast_publish_concatlist: '@seq_render_root/publish/_current/concat.txt'
+    maya_seq_playblast_publish_mov: '@seq_render_root/publish/v{version}/{Sequence}_{Step}_v{version}.mov'
+
     maya_seq_playblast_work_area: '@seq_render_root/work/maya/v{version}/playblast'
     maya_seq_playblast_work: '@maya_seq_playblast_work_area/{width}x{height}/{Sequence}[-{name}]_{Step}.{SEQ}.png'
-    
-    maya_seq_playblast_publish_mov: '@seq_render_root/publish/{Sequence}_{Step}_v{version}.mov'
-    maya_seq_playblast_work_mov: '@seq_render_root/work/{Sequence}_{Step}_v{version}.mov'
+    maya_seq_playblast_work_mov: '@seq_render_root/work/{Sequence}[-{name}]_{Step}_v{version}.mov'
     # review output
     maya_seq_playblast_review_mp4: '@seq_render_root/review/{Sequence}_{Step}_v{version}.mp4'
     
@@ -455,7 +461,8 @@ paths:
     maya_asset_snapshot: '@asset_root_step/work/maya/snapshots/{Asset}[-{name}]_{Step}_v{version}.{timestamp}.ma'
 
     # The location of published maya files
-    maya_asset_publish: '@asset_publish_area_maya/{Asset}_{Step}_v{version}.ma'
+    # maya_asset_publish: '@asset_publish_area_maya/{Asset}[-{name}]_{Step}_v{version}.ma'
+    maya_asset_publish: '@asset_publish_area_maya/{Asset}[_{Resolution}]_{Step}_v{version}.ma'
 
     # maya render outputs for assets
     maya_asset_render_playblast: '@asset_render_root/work/maya/v{version}/{Asset}[-{name}]_v{version}'

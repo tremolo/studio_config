@@ -118,7 +118,7 @@ engines:
       tk-multi-screeningroom: '@launch_screeningroom'
       tk-multi-workfiles: '@workfiles-launch-at-startup'
       wtd-multi-shotloader:
-        location: {path: 'U:\RTS\Git\wtd-multi-shotloader', type: dev, disabled: true}
+        location: {path: 'W:\RTS\People\xander\git\wtd-multi-shotloader', type: dev, disabled: true}
     compatibility_dialog_min_version: 2015
     debug_logging: false
     location: {name: tk-maya, type: app_store, version: v0.4.3}

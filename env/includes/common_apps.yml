@@ -17,7 +17,7 @@ frameworks:
     location: {name: tk-framework-widget, type: app_store, version: v0.2.2}
   tk-framework-wtd_v0.x.x:
     location: {name: tk-framework-wtd, path: 'https://github.com/RichardTheStork/tk-framework-wtd.git',
-      type: git, version: v0.0.6}
+      type: git, version: v0.0.8}
 workfiles:
   allow_task_creation: true
   file_extensions: []
