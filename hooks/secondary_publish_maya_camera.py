@@ -179,7 +179,7 @@ class PublishHook(Hook):
 			fileList=os.listdir(FolderPath)
 			fileList.sort()
 			lastVersion = fileList[-1]
-			return str(lastVersion)
+			return str(FolderPath+"/"+lastVersion)
 
 
 		wtd_fw = self.load_framework("tk-framework-wtd_v0.x.x")
@@ -339,10 +339,13 @@ class PublishHook(Hook):
 				# os.environ.get('FFMPEG_PATH')
 				# os.getenv('KEY_THAT_MIGHT_EXIST', default_value)
 				
-				# ffmpegPath =os.environ.get('FFMPEG_PATH')
+				ffmpegPath = '"%s'%(os.environ.get('FFMPEG_PATH'))
+				if "ffmpeg.exe" not in ffmpegPath:
+					ffmpegPath += "\\ffmpeg.exe"
+				ffmpegPath += '"'
 				#ffmpegPath =r"%FFMPEG_PATH%\ffmpeg"
-				#ffmpegPath =r'"C:\Program Files\ffmpeg\bin\ffmpeg"'
-				ffmpegPath = "W:/WG/WTD_Code/trunk/wtd/pipeline/resources/ffmpeg/bin/ffmpeg.exe"
+				#ffmpegPath =r'"C:/Program Files/ffmpeg/bin/ffmpeg"'
+				#ffmpegPath = "W:/WG/WTD_Code/trunk/wtd/pipeline/resources/ffmpeg/bin/ffmpeg.exe"
 				
 				"""
 					Adding Slates to playblast files
