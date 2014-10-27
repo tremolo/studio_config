@@ -314,7 +314,7 @@ engines:
         template_work_area: asset_work_area_maya
       wtd-multi-turntable:
         location: {path: 'https://github.com/TDelbergue/wtd-multi-turntable.git',
-          type: git, version: 0.0.1}
+          type: git, version: v0.0.2}
     compatibility_dialog_min_version: 2015
     debug_logging: false
     location: {name: tk-maya, type: app_store, version: v0.4.3}
