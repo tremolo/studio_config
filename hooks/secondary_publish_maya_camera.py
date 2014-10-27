@@ -406,8 +406,8 @@ class PublishHook(Hook):
 					SEQUENCE MOV and MP4 Creation
 				"""
 				print "Making mov and mp4: \n", pbMovPath, ' --- ', pbMp4Path
-				print combineMediaFiles(movList,pbMovPath,concatTxt)
-				print combineMediaFiles(movList,pbMp4Path,concatTxt)
+				print combineMediaFiles(movList,pbMovPath,concatTxt,ffmpegPath)
+				print combineMediaFiles(movList,pbMp4Path,concatTxt,ffmpegPath)
 		
 				# ----------------------------------------------
 				# UPLOAD QUICKTIME
