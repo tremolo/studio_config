@@ -147,7 +147,7 @@ class PublishHook(Hook):
 			MissingFrames =  set(my_list)-set(SequenceSet)
 			return sorted(MissingFrames)
 			
-		def combineMediaFiles(fileList,output,concatTxt=None):
+		def combineMediaFiles(fileList,output,concatTxt=None, ffmpeg_path = "ffmpeg"):
 			rootPath = str.split(str(fileList[0]),"/q")[0]
 			mediaType = str.rsplit(str(fileList[0]),".",1)[1]
 			mediaFilePresent = False
@@ -168,7 +168,7 @@ class PublishHook(Hook):
 						print("AUDIO FILE NOT FOUND :  " + str(mediaFile))
 						results.append({"task":"audio stuff", "errors":("AUDIO FILE NOT FOUND :  " + str(mediaFile))})
 			if mediaFilePresent:
-				command = os.path.normpath('W:/WG/WTD_Code/trunk/wtd/pipeline/resources/ffmpeg/bin/ffmpeg.exe -f concat -i '+mediaListFile+' -c copy '+output)
+				command = os.path.normpath(ffmpeg_path + ' -f concat -i '+mediaListFile+' -c copy '+output)
 				command = str.replace(str(command), "\\" , "/")
 				#print command
 				value = subprocess.call(command)
@@ -202,7 +202,8 @@ class PublishHook(Hook):
 		resetCutIn = False
 
 		# template stuff...
-		tk = tank.tank_from_path("W:/RTS/Tank/config")
+		# tk = tank.tank_from_path("W:/RTS/Tank/config")
+		tk = self.parent.tank
 		scenePath = cmds.file(q=True,sceneName=True)
 		scene_template = tk.template_from_path(scenePath)
 		flds = scene_template.get_fields(scenePath)
@@ -251,9 +252,6 @@ class PublishHook(Hook):
 			if len(errors) > 0:
 				# add result:
 				results.append({"task":task, "errors":errors})
-			 
-		#print("corresponing Shot numbers = " + str(pbShots))
-		#print("cut in list = " + str(CutInList))
 
 		# temporarily hide cams and curves
 		modPan = cmds.getPanel(type="modelPanel")
@@ -276,8 +274,17 @@ class PublishHook(Hook):
 		flds['Shot'] = flds['Sequence']
 		flds['version'] = stepVersion #set version back
 
+		#Get USER
+		USER = sgtk.util.get_current_user(tk)
+
+		ffmpegPath = '"'+os.environ.get('FFMPEG_PATH')
+		if "ffmpeg.exe" not in ffmpegPath:
+			ffmpegPath += "\\ffmpeg.exe"
+		ffmpegPath += '"'
+
+		
 		audioOutput = pbArea_template.apply_fields(flds)+"/"+flds['Sequence']+"_"+flds['Step']+".wav"
-		combinedAudio = combineMediaFiles(audioList,audioOutput)
+		combinedAudio = combineMediaFiles(audioList,audioOutput, ffmpeg_path = ffmpegPath)
 		print ("combined audio at  " + audioOutput)
 		
 
@@ -300,12 +307,11 @@ class PublishHook(Hook):
 				shotCam = cmds.shot(pbShot, q=True, currentCamera=True)
 
 				# overscanValue = cmds.getAttr(shotCam+".overscan")
-				
 				cmds.setAttr(shotCam+".overscan", 1.3)
 				if noOverscan:
 					cmds.setAttr(shotCam+".overscan", 1)
 				
-			# make outputPaths from templates
+				# make outputPaths from templates
 				RenderPath = pb_template.apply_fields(flds)
 				pbPath = str.split(str(RenderPath),".")[0]
 
@@ -321,7 +327,7 @@ class PublishHook(Hook):
 				if not os.path.exists(os.path.dirname(pbPathCurrentMov)):
 					os.makedirs(os.path.dirname(pbPathCurrentMov))
 
-			# report progress:
+				# report progress:
 				progress_cb(0, "Publishing", task)
 
 				shotStart = cmds.shot(pbShot,q=True,sequenceStartTime=True)
@@ -334,18 +340,6 @@ class PublishHook(Hook):
 				#GET CURRENT DATE
 				today = datetime.date.today()
 				todaystr = today.isoformat()
-				#Get USER
-				USER = sgtk.util.get_current_user(tk)
-				# os.environ.get('FFMPEG_PATH')
-				# os.getenv('KEY_THAT_MIGHT_EXIST', default_value)
-				
-				ffmpegPath = '"%s'%(os.environ.get('FFMPEG_PATH'))
-				if "ffmpeg.exe" not in ffmpegPath:
-					ffmpegPath += "\\ffmpeg.exe"
-				ffmpegPath += '"'
-				#ffmpegPath =r"%FFMPEG_PATH%\ffmpeg"
-				#ffmpegPath =r'"C:/Program Files/ffmpeg/bin/ffmpeg"'
-				#ffmpegPath = "W:/WG/WTD_Code/trunk/wtd/pipeline/resources/ffmpeg/bin/ffmpeg.exe"
 				
 				"""
 					Adding Slates to playblast files
@@ -369,10 +363,7 @@ class PublishHook(Hook):
 			LastImg= int(FindLastImageOfSequence(os.path.dirname(RenderPath)))
 
 			FramesMissingList= FindMissingFramesFromSequence( sequenceTest , FistImg, LastImg )
-			
-			# for n in FramesMissingList:
-				# os.system('%s -f lavfi -i color=c=black:s="%s" -vframes 1 "%s"' %(ffmpegPath,(str(flds['width'])+"x"+ str(flds['height'])),FirstPartName+str('%04d' % n)+".png"))
-			
+						
 			"""
 				Copy empty frames
 			"""
@@ -391,7 +382,6 @@ class PublishHook(Hook):
 
 			FirstImageNumber= FindFirstImageOfSequence(os.path.dirname(RenderPath))
 			FirstImageNumberSecond= FirstImageNumber/24
-			
 
 			'''
 			makeSeqMov
@@ -416,8 +406,6 @@ class PublishHook(Hook):
 					SEQUENCE MOV and MP4 Creation
 				"""
 				print "Making mov and mp4: \n", pbMovPath, ' --- ', pbMp4Path
-				# print ffmpeg.ffmpegMakingMovie(inputFilePath=RenderPath, outputFilePath=maya_seq_pbst_pbsh_mov_path, audioPath=combinedAudio, start_frame=FirstImageNumber, framerate=24 , encodeOptions='libx264',ffmpegPath=ffmpegPath)
-				# print ffmpeg.ffmpegMakingMovie(inputFilePath=RenderPath, outputFilePath=maya_seq_pbst_rev_mp4_path, audioPath=combinedAudio, start_frame=FirstImageNumber, framerate=24 , encodeOptions='libx264',ffmpegPath=ffmpegPath)
 				print combineMediaFiles(movList,pbMovPath,concatTxt)
 				print combineMediaFiles(movList,pbMp4Path,concatTxt)
 		
@@ -432,7 +420,7 @@ class PublishHook(Hook):
 
 					sg = sgtk.api.shotgun.Shotgun(SERVER_PATH, SCRIPT_USER, SCRIPT_KEY)
 					user = self.parent.context.user
-
+					
 					data = {'project': {'type':'Project','id':66},
 							'entity': {'type':'Sequence', 'id':int(sequence_id)},
 							'code': flds ['Sequence']+"_"+flds['Step']+"_v"+str('%03d' % (flds['version'])),
