@@ -10,6 +10,7 @@ pipeline_configuration.yml
 *.o
 *.so
 *.pyc
+*.py[cod]
  
 # Packages #
 ############
