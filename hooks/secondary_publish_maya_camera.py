@@ -168,7 +168,7 @@ class PublishHook(Hook):
 						print("AUDIO FILE NOT FOUND :  " + str(mediaFile))
 						results.append({"task":"audio stuff", "errors":("AUDIO FILE NOT FOUND :  " + str(mediaFile))})
 			if mediaFilePresent:
-				command = os.path.normpath(ffmpeg_path + ' -f concat -i '+mediaListFile+' -c copy '+output)
+				command = os.path.normpath(ffmpeg_path + ' -f concat -i '+mediaListFile+' -c copy '+output + " -y")
 				command = str.replace(str(command), "\\" , "/")
 				#print command
 				value = subprocess.call(command)
@@ -367,18 +367,18 @@ class PublishHook(Hook):
 			"""
 				Copy empty frames
 			"""
-			blackFrame = False
-			blackFrameName = ""
-			for n in FramesMissingList:
-				if blackFrame == False:
-					blackFrameName = FirstPartName+str('%04d' % n)+".png"
-					value = subprocess.call('%s -f lavfi -i color=c=black:s="%s" -vframes 1 "%s"' %(ffmpegPath,(str(flds['width'])+"x"+ str(flds['height'])),FirstPartName+str('%04d' % n)+".png"))
-					print '%s -f lavfi -i color=c=black:s="%s" -vframes 1 "%s"' %(ffmpegPath,(str(flds['width'])+"x"+ str(flds['height'])),FirstPartName+str('%04d' % n)+".png")
-					blackFrame = True
+			# blackFrame = False
+			# blackFrameName = ""
+			# for n in FramesMissingList:
+				# if blackFrame == False:
+					# blackFrameName = FirstPartName+str('%04d' % n)+".png"
+					# value = subprocess.call('%s -f lavfi -i color=c=black:s="%s" -vframes 1 "%s"' %(ffmpegPath,(str(flds['width'])+"x"+ str(flds['height'])),FirstPartName+str('%04d' % n)+".png"))
+					# print '%s -f lavfi -i color=c=black:s="%s" -vframes 1 "%s"' %(ffmpegPath,(str(flds['width'])+"x"+ str(flds['height'])),FirstPartName+str('%04d' % n)+".png")
+					# blackFrame = True
 				
-				newFrameName = FirstPartName+str('%04d' % n)+".png"
-				if blackFrameName != newFrameName:
-					shutil.copy2(blackFrameName, newFrameName)	
+				# newFrameName = FirstPartName+str('%04d' % n)+".png"
+				# if blackFrameName != newFrameName:
+					# shutil.copy2(blackFrameName, newFrameName)	
 
 			FirstImageNumber= FindFirstImageOfSequence(os.path.dirname(RenderPath))
 			FirstImageNumberSecond= FirstImageNumber/24
