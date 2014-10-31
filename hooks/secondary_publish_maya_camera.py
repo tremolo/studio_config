@@ -9,7 +9,7 @@
 # not expressly granted therein are reserved by Shotgun Software Inc.
 
 import time, datetime, os, subprocess
-import shutil
+import re, shutil
 import maya.cmds as cmds
 
 from os import listdir
@@ -22,6 +22,7 @@ from tank import TankError
 import sgtk
 from sgtk.platform import Application
 
+CREATE_NO_WINDOW  = 0x00000008
 
 #from shotgun import Shotgun
 
@@ -166,20 +167,33 @@ class PublishHook(Hook):
 						mediaTxtFile.write('\r\n')
 					else:
 						print("AUDIO FILE NOT FOUND :  " + str(mediaFile))
-						results.append({"task":"audio stuff", "errors":("AUDIO FILE NOT FOUND :  " + str(mediaFile))})
+						# results.append({"task":"audio stuff", "errors":("AUDIO FILE NOT FOUND :  " + str(mediaFile))})
 			if mediaFilePresent:
 				command = os.path.normpath(ffmpeg_path + ' -f concat -i '+mediaListFile+' -c copy '+output + " -y")
 				command = str.replace(str(command), "\\" , "/")
 				#print command
-				value = subprocess.call(command)
+				value = subprocess.call(command, creationflags=CREATE_NO_WINDOW, shell=False)
 				return output
 			else:
 				return None
-		def findLastVersion(FolderPath):
-			fileList=os.listdir(FolderPath)
-			fileList.sort()
-			lastVersion = fileList[-1]
-			return str(FolderPath+"/"+lastVersion)
+		
+		def findLastVersion(FolderPath,returnFile=False,returnFilePath=False):
+			if os.path.exists(FolderPath):
+				fileList=os.listdir(FolderPath)
+			else:
+				return 0
+			if fileList != []:
+				fileList.sort()
+				lastVersion = fileList[-1]
+				version = int(re.findall('\d+', lastVersion)[-1])
+				if returnFilePath:
+					return FolderPath+"/"+lastVersion
+				if returnFile:
+					return lastVersion
+				return version
+				#return str(FolderPath+"/"+lastVersion)
+			else:
+				return 0
 
 
 		wtd_fw = self.load_framework("tk-framework-wtd_v0.x.x")
@@ -258,6 +272,21 @@ class PublishHook(Hook):
 		for pan in modPan:
 			cmds.modelEditor( pan,e=True, alo= False, polymeshes =True )
 			cmds.modelEditor( pan,e=True,displayAppearance="smoothShaded")
+			cmds.modelEditor( pan,e=True,displayTextures=True)
+			allobjs = cmds.ls(type= "transform")
+			boundingboxObjsList = []
+
+
+			for i in allobjs:
+				if cmds.getAttr(i+".overrideEnabled"):
+					if cmds.getAttr(i+".overrideLevelOfDetail") == 1:
+						boundingboxObjsList.append(i)
+						cmds.setAttr(i+".overrideLevelOfDetail",0)
+						
+		currentselection= cmds.ls(sl=True)
+		cmds.select(cl=True)
+		
+		cmds.headsUpDisplay(lv=False)
 
 		CamsList = cmds.listCameras()
 		for Cam in CamsList:
@@ -265,14 +294,19 @@ class PublishHook(Hook):
 		
 		# audio stuff
 		stepVersion = flds['version']
+		step = flds['Step']
 		audioList = []
 		for sht in shots:
 			#print sht
 			flds['Shot'] = (flds['Sequence']+"_"+sht)
-			#flds['version'] = 1 #temporary set version to 1 for soundfiles ...
-			audioList += [str.replace(str(audio_template.apply_fields(flds)),"\\","/")]
+			flds['version'] = findLastVersion(os.path.dirname(audio_template.apply_fields(flds)))
+			flds['Step'] = 'snd'
+			print flds['version']
+			if flds['version'] > 0:
+				audioList += [str.replace(str(audio_template.apply_fields(flds)),"\\","/")]
 		flds['Shot'] = flds['Sequence']
 		flds['version'] = stepVersion #set version back
+		flds['Step'] = step
 
 		#Get USER
 		USER = sgtk.util.get_current_user(tk)
@@ -284,7 +318,8 @@ class PublishHook(Hook):
 
 		
 		audioOutput = pbArea_template.apply_fields(flds)+"/"+flds['Sequence']+"_"+flds['Step']+".wav"
-		combinedAudio = combineMediaFiles(audioList,audioOutput, ffmpeg_path = ffmpegPath)
+		if audioList != []:
+			combinedAudio = combineMediaFiles(audioList,audioOutput, ffmpeg_path = ffmpegPath)
 		print ("combined audio at  " + audioOutput)
 		
 
@@ -349,15 +384,27 @@ class PublishHook(Hook):
 					EndPartName = '%04d' % i + RenderPath.split( '%04d' )[-1]
 					ImageFullName = FirstPartName + EndPartName
 					pbFileCurrent = pbPathCurrent+"."+EndPartName
-					ffmpeg.ffmpegMakingSlates(inputFilePath= ImageFullName, outputFilePath= ImageFullName, topleft = flds ['Sequence']+"_"+flds['Step']+"_v"+str('%03d' % (flds['version'])), topmiddle = Film, topright = str(int(CutIn))+"-"+str('%04d' %(i-int(shotStart)+CutIn))+"-"+str('%04d' %(int(shotEnd)-int(shotStart)+CutIn))+"  "+str('%04d' %(i-int(shotStart)))+"-"+str('%04d' %(int(shotEnd)-int(shotStart))), bottomleft = shotName, bottommiddle = USER['name'], bottomright = todaystr , ffmpegPath =ffmpegPath, font = "C:/Windows/Fonts/arial.ttf"  )
+					ffmpeg.ffmpegMakingSlates(inputFilePath= ImageFullName, outputFilePath= ImageFullName, topleft = flds ['Sequence']+"_"+flds['Step']+"_v"+str('%03d' % (flds['version'])), topmiddle = Film, topright = str(int(CutIn))+"-"+str('%04d' %(i-int(shotStart)+CutIn))+"-"+str('%04d' %(int(shotEnd)-int(shotStart)+CutIn))+"  "+str('%04d' %(i-int(shotStart)+1))+"-"+str('%04d' %(int(shotEnd)-int(shotStart)+1)), bottomleft = shotName, bottommiddle = USER['name'], bottomright = todaystr , ffmpegPath =ffmpegPath, font = "C:/Windows/Fonts/arial.ttf"  )
 					print("COPYING PNG "+ImageFullName+"  TO  "+pbFileCurrent+"  FOR SHOT  " + shotName)
 					shutil.copy2(ImageFullName, pbFileCurrent)
 				
 				shotAudio = audio_template.apply_fields(flds)
-				shotAudio = findLastVersion(os.path.dirname(shotAudio))
+				shotAudio = findLastVersion(os.path.dirname(shotAudio),True,True)
+				if shotAudio == 0:
+					print " NO AUDIO FOUND "
+					try:
+						audio = cmds.shot(pbShot,q=True,audio=True)
+						shotAudio = '"'+cmds.getAttr(audio+".filename")+'"'
+						print "used audio from maya :  ", shotAudio
+					except:
+						shotAudio = ''
 				print ffmpeg.ffmpegMakingMovie(inputFilePath=renderPathCurrent, outputFilePath=pbPathCurrentMov, audioPath=shotAudio, start_frame=int(shotStart),end_frame=int(shotEnd), framerate=24 , encodeOptions='libx264',ffmpegPath=ffmpegPath)
 				# end_frame=shotEnd
-
+			
+			cmds.select(currentselection)
+			for i in boundingboxObjsList:
+				cmds.setAttr(i+".overrideEnabled",True)
+				cmds.setAttr(i+".overrideLevelOfDetail",1)
 			sequenceTest= MakeListOfSequence(os.path.dirname(RenderPath))
 			FistImg= int(FindFirstImageOfSequence(os.path.dirname(RenderPath))) 
 			LastImg= int(FindLastImageOfSequence(os.path.dirname(RenderPath)))
@@ -398,16 +445,18 @@ class PublishHook(Hook):
 			makeSeqMov = True
 			if makeSeqMov:
 				if not os.path.exists(os.path.dirname(pbMovPath)):
-					os.makedirs(os.path.dirname(pbMovPath))
+					self.parent.ensure_folder_exists(os.path.dirname(pbMovPath))
+					# os.makedirs(os.path.dirname(pbMovPath))
 				
 				if not os.path.exists(os.path.dirname(pbMp4Path)):
-					os.makedirs(os.path.dirname(pbMp4Path))
+					self.parent.ensure_folder_exists(os.path.dirname(pbMovPath))
+					# os.makedirs(os.path.dirname(pbMp4Path))
 				"""
 					SEQUENCE MOV and MP4 Creation
 				"""
 				print "Making mov and mp4: \n", pbMovPath, ' --- ', pbMp4Path
 				print combineMediaFiles(movList,pbMovPath,concatTxt,ffmpegPath)
-				print combineMediaFiles(movList,pbMp4Path,concatTxt,ffmpegPath)
+				print ffmpeg.ffmpegMakingMovie(pbMovPath,pbMp4Path,encodeOptions="libx264",ffmpegPath=ffmpegPath)
 		
 				# ----------------------------------------------
 				# UPLOAD QUICKTIME
@@ -426,12 +475,13 @@ class PublishHook(Hook):
 							'code': flds ['Sequence']+"_"+flds['Step']+"_v"+str('%03d' % (flds['version'])),
 							'sg_path_to_frames':os.path.dirname(RenderPath),
 							'sg_path_to_movie':pbMovPath,
+							'user': user,
 							'created_by': user,
 							'updated_by': user
 							}
 
 					result = sg.create('Version', data)
-					executed = sg.upload("Version",result['id'],pbMovPath,'sg_uploaded_movie')
+					executed = sg.upload("Version",result['id'],pbMp4Path,'sg_uploaded_movie')
 					print executed
 			
 			# print "TODO : make mov of whole sequence with audio"

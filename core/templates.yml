@@ -212,8 +212,8 @@ paths:
     shot_data_root: '@shot_root/data'
     shot_positionlist: '@shot_data_root/positionlist/poslist_{Shot}[_{Step}]_v{version}.txt'
     shot_audio: '@shot_data_root/audio/{Shot}_v{version}.wav'
-    shot_published_audio: '@shot_root/snd/publish/{Shot}_v{version}.wav'
-    shot_work_audio: '@shot_root/snd/work/{Shot}_v{version}.wav'
+    shot_published_audio: '@shot_root/snd/publish/{Shot}_{Step}_v{version}.wav'
+    shot_work_audio: '@shot_root/snd/work/{Shot}_{Step}_v{version}.wav'
     shot_camera_area: '@shot_data_root/camera'
     shot_camera_step: '@shot_camera_area/{Step}'
     shot_camera_maya_publish: '@shot_camera_step/publish/cam_{Shot}_v{version}.ma'
@@ -431,18 +431,18 @@ paths:
 
     # The location of WIP files
     asset_work_area_photoshop: '@asset_root_step/work/photoshop'
-    photoshop_asset_work: '@asset_root_step/work/photoshop/{Asset}[-{name}]_{Step}_v{version}.psd'
-    photoshop_asset_work_exr: '@asset_root_step/work/photoshop/{Asset}[-{name}]_v{version}[_{channel}].exr'
-    photoshop_asset_work_png: '@asset_root_step/work/photoshop/{Asset}[-{name}]_v{version}[_{channel}].png'
+    photoshop_asset_work: '@asset_work_area_photoshop/{Asset}[-{name}]_{Step}_v{version}.psd'
+    photoshop_asset_work_exr: '@asset_work_area_photoshop/v{version}/{Asset}[-{name}][_{channel}]_v{version}.exr'
+    photoshop_asset_work_png: '@asset_work_area_photoshop/v{version}/{Asset}[-{name}][_{channel}]_v{version}.png'
 
     # The location of backups of WIP files
     photoshop_asset_snapshot: '@asset_root_step/work/photoshop/snapshots/{Asset}[-{name}]_v{version}.{timestamp}.psd'
 
     # The location of published files
     asset_publish_area_photoshop: '@asset_root_step/publish/photoshop'
-    photoshop_asset_publish: '@asset_root_step/publish/photoshop/{Asset}[-{name}]_{Step}_v{version}.psd'
-    photoshop_asset_publish_exr: '@asset_root_step/publish/photoshop/{Asset}[-{name}]_v{version}[_{channel}].exr'
-    photoshop_asset_publish_png: '@asset_root_step/publish/photoshop/{Asset}[-{name}]_v{version}[_{channel}].png'
+    photoshop_asset_publish: '@asset_publish_area_photoshop/{Asset}[-{name}]_{Step}_v{version}.psd'
+    photoshop_asset_publish_exr: '@asset_publish_area_photoshop/v{version}/{Asset}[-{name}][_{channel}]_v{version}.exr'
+    photoshop_asset_publish_png: '@asset_publish_area_photoshop/v{version}/{Asset}[-{name}][_{channel}]_v{version}.png'
 
     #
     # Maya
@@ -455,14 +455,14 @@ paths:
     asset_publish_area_maya: '@asset_root_step/publish/maya'
 
     # The location of WIP files[-{name}]
-    maya_asset_work: '@asset_work_area_maya/{Asset}[-{name}]_{Step}_v{version}.ma'
+    maya_asset_work: '@asset_work_area_maya/{Asset}[-{name}][_{Resolution}]_{Step}_v{version}.ma'
 
     # The location of backups of WIP files
     maya_asset_snapshot: '@asset_root_step/work/maya/snapshots/{Asset}[-{name}]_{Step}_v{version}.{timestamp}.ma'
 
     # The location of published maya files
     # maya_asset_publish: '@asset_publish_area_maya/{Asset}[-{name}]_{Step}_v{version}.ma'
-    maya_asset_publish: '@asset_publish_area_maya/{Asset}[_{Resolution}]_{Step}_v{version}.ma'
+    maya_asset_publish: '@asset_publish_area_maya/{Asset}[-{name}][_{Resolution}]_{Step}_v{version}.ma'
 
     # maya render outputs for assets
     maya_asset_render_playblast: '@asset_render_root/work/maya/v{version}/{Asset}[-{name}]_v{version}'

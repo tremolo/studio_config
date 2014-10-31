@@ -81,9 +81,14 @@ class ScanSceneHook(Hook):
         # create the primary item - this will match the primary output 'scene_item_type':            
         items.append({"type": "work_file", "name": name})
 
+        tk = self.parent.tank
+        scenePath = cmds.file(q=True,sceneName=True)
+        scene_template = tk.template_from_path(scenePath)
+        flds = scene_template.get_fields(scenePath)
+
         # get shotgun info about what shot are needed in this sequence
         fields = ['id']
-        sequence_id = self.parent.shotgun.find('Sequence',[['code', 'is','q340' ]], fields)[0]['id']
+        sequence_id = self.parent.shotgun.find('Sequence',[['code', 'is',flds['Sequence']]], fields)[0]['id']
         fields = ['id', 'code', 'sg_asset_type','sg_cut_in','sg_cut_out']
         filters = [['sg_sequence', 'is', {'type':'Sequence','id':sequence_id}]]
         assets= self.parent.shotgun.find("Shot",filters,fields)

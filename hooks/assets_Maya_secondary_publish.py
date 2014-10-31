@@ -119,7 +119,7 @@ class PublishHook(Hook):
 		tank_type = output["tank_type"]
 		publish_template = output["publish_template"]        
 		
-		filters = [ ['code', 'is', 'Prop Modeling'] ]
+		filters = [ ['code', 'is', 'Prop Template'] ]
 		taskTemplate = self.parent.shotgun.find_one('TaskTemplate', filters)
 		
 		# get the current scene path and extract fields from it
