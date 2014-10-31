@@ -257,7 +257,12 @@ class PublishHook(Hook):
 			try:
 				# set layer visibility
 				layers = layer_doc.artLayers
-				for layer in [layers.index(li) for li in xrange(layers.length)]:
+				layerSets = layer_doc.layerSets
+				layers = [layers.index(i) for i in xrange(layers.length)]
+				layerSets = [layerSets.index(i) for i in xrange(layerSets.length)]
+				for layer in layers:
+					layer.visible = (layer.name == layer_name)
+				for layer in layerSets:
 					layer.visible = (layer.name == layer_name)
 				
 				# flatten
