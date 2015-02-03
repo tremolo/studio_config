@@ -1,1 +1,1 @@
-primary: {linux_path: null, mac_path: null, windows_path: 'w:\'}
+primary: {linux_path: '/srv/projects/rts', mac_path: null, windows_path: 'w:\'}
