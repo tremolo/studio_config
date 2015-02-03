@@ -493,6 +493,35 @@ paths:
     modo_asset_render: '@asset_render_root/publish/modo/v{version}/{Asset}[-{name}]_{Step}_v{version}.{SEQ}.exr'
     modo_asset_quicktime:   '@asset_render_root/review/modo/{Asset}[-{name}]_{Step}_v{version}.mov'
 
+    shot_work_area_modo: '@shot_root_step/work/modo'
+    
+    # define the location of a publish area
+    shot_publish_area_modo: '@shot_root_step/publish/modo'
+
+    # The location of WIP files ([-{name}])
+    modo_shot_work: '@shot_root_step/work/modo/{Shot}_{Step}_v{version}.lxo'
+
+    # The location of backups of WIP files
+    modo_shot_snapshot: '@shot_root_step/work/modo/snapshots/{Shot}[-{name}]_{Step}_v{version}.{timestamp}.lxo'
+
+    # The location of published modo files [_{name}Main]
+    modo_shot_publish: '@shot_root_step/publish/modo/{Shot}_{Step}_v{version}.lxo'
+
+
+    # define the location of a work area
+    seq_work_area_modo: '@seq_root_step/work/modo'
+    # # define the location of a publish area
+    seq_publish_area_modo: '@seq_root_step/publish/modo'
+
+    # # The location of WIP files ([-{name}])
+    modo_seq_work: '@seq_root_step/work/modo/{Sequence}[-{name}]_{Step}_v{version}.lxo'
+
+    # # The location of backups of WIP files
+    modo_seq_snapshot: '@seq_root_step/work/modo/snapshots/{Sequence}[-{name}]_{Step}_v{version}.{timestamp}.lxo'
+
+    # # The location of published modo files [_{name}Main]
+    modo_seq_publish: '@seq_root_step/publish/modo/{Sequence}_{Step}_v{version}.lxo'
+
 
     #
     # Houdini
