@@ -76,8 +76,9 @@ softimage_linux: XSI
 #
 # Modo
 #
-Modo_windows: C:\Program Files\Luxology\modo\701_sp3\modo.exe
-Modo_linux: modo
+modo_windows: C:\Program Files\Luxology\modo\801_sp3\modo.exe
+modo_linux: modo
+modo_mac: /Applications/Modo.app
 
 #
 # Tweak RV

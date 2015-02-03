@@ -155,6 +155,39 @@ engines:
     menu_favourites:
     - {app_instance: tk-multi-workfiles, name: Shotgun File Manager...}
     template_project: null
+  tk-modo:
+    apps:
+      tk-multi-about: '@about'
+      tk-multi-screeningroom: '@launch_screeningroom'
+      tk-multi-workfiles: '@workfiles-launch-at-startup'
+      tk-multi-publish:
+        allow_taskless_publishes: true
+        display_name: Publish Project
+        expand_single_items: false
+        hook_copy_file: default
+        hook_post_publish: default
+        hook_primary_pre_publish: default
+        hook_primary_publish: default
+        hook_scan_scene: default
+        hook_secondary_pre_publish: default
+        hook_secondary_publish: default
+        hook_thumbnail: default
+        location: {name: tk-multi-publish, type: app_store, version: v0.6.3}
+        primary_description: Publish and version up the selected Modo scene
+        primary_display_name: Modo Publish
+        primary_icon: icons/publish_hiero_main.png
+        primary_publish_template: modo_project_publish
+        primary_scene_item_type: work_file
+        primary_tank_type: Modo Scene
+        secondary_outputs: []
+        template_work: modo_project_work
+    compatibility_dialog_min_version: 801
+    debug_logging: false
+    location: {path: 'W:\RTS\People\Lpaelike\dev\tk-modo', type: dev}
+    menu_favourites:
+    - {app_instance: tk-multi-workfiles, name: Shotgun File Manager...}
+    template_project: null
+    use_sgtk_as_menu_name: false
 frameworks:
   tk-framework-adminui_v0.x.x:
     location: {name: tk-framework-adminui, type: app_store, version: v0.0.7}
