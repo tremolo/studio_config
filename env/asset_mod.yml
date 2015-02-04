@@ -719,7 +719,7 @@ engines:
         template_work_area: asset_work_area_modo
     compatibility_dialog_min_version: 801
     debug_logging: false
-    location: {path: 'W:\RTS\People\Lpaelike\dev\tk-modo', type: dev}
+    location: {path: 'https://github.com/tremolo/studio_config.git', type: git}
     menu_favourites:
     - {app_instance: tk-multi-workfiles, name: Shotgun File Manager...}
     - {app_instance: tk-multi-snapshot, name: Snapshot...}

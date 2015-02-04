@@ -150,7 +150,7 @@ launch_modo:
   icon: '{target_engine}/icon_256.png'
   linux_args: ''
   linux_path: '@modo_linux'
-  location: {path: 'W:\RTS\People\Lpaelike\dev\tk-multi-launchapp', type: dev}
+  location: {path: 'https://github.com/tremolo/tk-multi-launchapp.git', type: git}
   mac_args: ''
   mac_path: '@modo_mac'
   menu_name: Launch Modo
