@@ -36,7 +36,7 @@ engines:
       tk-multi-workfiles: '@workfiles-launch-at-startup'}
     compatibility_dialog_min_version: 801
     debug_logging: false
-    location: {path: 'https://github.com/tremolo/studio_config.git', type: git}
+    location: {path: 'https://github.com/tremolo/tk-modo.git', type: git, version: v0.1.0}
     menu_favourites:
     - {app_instance: tk-multi-workfiles, name: Shotgun File Manager...}
     template_project: null

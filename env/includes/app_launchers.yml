@@ -63,6 +63,23 @@ launch_maya:
   versions: []
   windows_args: ''
   windows_path: '@maya_windows'
+launch_modo:
+  defer_keyword: ''
+  engine: tk-modo
+  extra: {}
+  hook_app_launch: default
+  hook_before_app_launch: default
+  icon: '{target_engine}/icon_256.png'
+  linux_args: ''
+  linux_path: '@modo_linux'
+  location: {path: 'https://github.com/tremolo/tk-multi-launchapp.git', type: git,
+    version: master}
+  mac_args: ''
+  mac_path: '@modo_mac'
+  menu_name: Launch Modo
+  versions: []
+  windows_args: ''
+  windows_path: '@modo_windows'
 launch_motionbuilder:
   defer_keyword: ''
   engine: tk-motionbuilder
@@ -141,19 +158,3 @@ launch_softimage:
   versions: []
   windows_args: ''
   windows_path: '@softimage_windows'
-launch_modo:
-  defer_keyword: ''
-  engine: tk-modo
-  extra: {}
-  hook_app_launch: default
-  hook_before_app_launch: default
-  icon: '{target_engine}/icon_256.png'
-  linux_args: ''
-  linux_path: '@modo_linux'
-  location: {path: 'https://github.com/tremolo/tk-multi-launchapp.git', type: git}
-  mac_args: ''
-  mac_path: '@modo_mac'
-  menu_name: Launch Modo
-  versions: []
-  windows_args: ''
-  windows_path: '@modo_windows'

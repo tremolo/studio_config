@@ -10,11 +10,11 @@ engines:
         location: {name: tk-shotgun-launchfolder, type: app_store, version: v0.1.5}
       tk-shotgun-launchhoudini: '@launch_houdini'
       tk-shotgun-launchmaya: '@launch_maya'
+      tk-shotgun-launchmodo: '@launch_modo'
       tk-shotgun-launchmotionbuilder: '@launch_motionbuilder'
       tk-shotgun-launchnuke: '@launch_nuke'
       tk-shotgun-launchphotoshop: '@launch_photoshop'
       tk-shotgun-launchsoftimage: '@launch_softimage'
-      tk-shotgun-launchmodo: '@launch_modo'
     debug_logging: false
     location: {name: tk-shotgun, type: app_store, version: v0.5.0}
 frameworks: null
