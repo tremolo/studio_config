@@ -378,7 +378,7 @@ engines:
         hook_secondary_pre_publish: default
         hook_secondary_publish: default
         hook_thumbnail: default
-        location: {name: tk-multi-publish, type: app_store, version: v0.6.7}
+        location: {path: 'https://github.com/tremolo/tk-multi-publish.git', type: git, version: v0.6.7.1}
         primary_description: Publish and version up the current modo scene
         primary_display_name: modo Publish
         primary_icon: icons/publish_modo_main.png
